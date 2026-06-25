@@ -1,0 +1,141 @@
+@import 'tailwindcss';
+
+/* Modo oscuro basado en la clase `.dark` del <html> (la gestiona ThemeToggle). */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ------------------------------------------------------------------ *
+ * Tokens de diseño
+ * Semánticos y conmutables por tema. Se exponen a Tailwind con
+ * `@theme inline` para usarlos como utilidades (bg-background, etc.).
+ * ------------------------------------------------------------------ */
+:root {
+  --background: #ffffff;
+  --foreground: #0a0a0a;
+  --muted: #52525b;
+  --border: rgba(10, 10, 10, 0.08);
+  --accent: #eab308;
+  color-scheme: light;
+}
+
+.dark {
+  --background: #0a0a0a;
+  --foreground: #fafafa;
+  --muted: #a1a1aa;
+  --border: rgba(250, 250, 250, 0.1);
+  --accent: #f5c518;
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-accent: var(--accent);
+
+  --font-mono: 'Space Mono', ui-monospace, SFMono-Regular, 'SF Mono', Menlo,
+    Consolas, monospace;
+}
+
+/* ------------------------------------------------------------------ *
+ * Capa base
+ * ------------------------------------------------------------------ */
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-mono);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Transición suave de color al cambiar de tema. No anima en el primer
+     render (las transiciones requieren un valor previo), solo al alternar. */
+  body,
+  body * {
+    transition-property: color, background-color, border-color, fill, stroke;
+    transition-duration: 300ms;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  ::selection {
+    background-color: var(--accent);
+    color: #0a0a0a;
+  }
+}
+
+/* ------------------------------------------------------------------ *
+ * Animaciones
+ * Entrada sutil y escalonada en la carga + punto de estado pulsante.
+ * Todo se neutraliza con `prefers-reduced-motion` (ver más abajo),
+ * dejando los elementos en su estado final y visible.
+ * ------------------------------------------------------------------ */
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+    filter: blur(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+@keyframes reveal-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes ping-soft {
+  0% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  70%,
+  100% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+}
+
+.reveal {
+  animation: reveal 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.reveal-fade {
+  animation: reveal-fade 1s ease both;
+}
+
+.ping-soft {
+  animation: ping-soft 2.6s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+/* Respeta la preferencia de movimiento reducido. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+}

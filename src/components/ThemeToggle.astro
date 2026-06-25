@@ -1,0 +1,97 @@
+---
+import { getTranslation, defaultLang } from '../i18n';
+
+const t = getTranslation(defaultLang);
+---
+
+<button
+  type="button"
+  id="theme-toggle"
+  aria-label={t.a11y.theme}
+  title={t.a11y.theme}
+  data-i18n-aria="a11y.theme"
+  class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-border text-muted duration-200 hover:border-foreground/20 hover:bg-foreground/[0.04] hover:text-foreground focus-visible:text-foreground"
+>
+  {/* Sol: visible en modo oscuro (clic → claro) */}
+  <svg
+    class="hidden h-[18px] w-[18px] dark:block"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="1.75"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    aria-hidden="true"
+  >
+    <circle cx="12" cy="12" r="4"></circle>
+    <path
+      d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"
+    ></path>
+  </svg>
+
+  {/* Luna: visible en modo claro (clic → oscuro) */}
+  <svg
+    class="block h-[18px] w-[18px] dark:hidden"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="1.75"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    aria-hidden="true"
+  >
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+  </svg>
+</button>
+
+<script>
+  type Theme = 'light' | 'dark';
+
+  const STORAGE_KEY = 'theme';
+  const root = document.documentElement;
+  const toggle = document.getElementById('theme-toggle');
+  const favicon = document.getElementById('favicon') as HTMLLinkElement | null;
+
+  /**
+   * Genera el favicon (monograma «ES») con los colores del tema activo,
+   * como data URI. Así el favicon sigue al tema de la app —no solo al del
+   * sistema— en la carga inicial, al alternar y al cambiar el SO.
+   */
+  const faviconFor = (theme: Theme): string => {
+    // Noche: fondo negro, letra blanca. Día: fondo blanco, letra negra.
+    const [bg, fg] =
+      theme === 'dark' ? ['#0a0a0a', '#fafafa'] : ['#fafafa', '#0a0a0a'];
+    const svg =
+      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">' +
+      `<rect width="32" height="32" rx="8" fill="${bg}"/>` +
+      '<text x="16" y="16" text-anchor="middle" dominant-baseline="central" ' +
+      `font-family="monospace" font-size="14" font-weight="700" letter-spacing="-0.5" fill="${fg}">ES</text>` +
+      '</svg>';
+    return `data:image/svg+xml,${encodeURIComponent(svg)}`;
+  };
+
+  const applyTheme = (theme: Theme, persist = true): void => {
+    root.classList.toggle('dark', theme === 'dark');
+    root.style.colorScheme = theme;
+    if (favicon) favicon.href = faviconFor(theme);
+    if (persist) localStorage.setItem(STORAGE_KEY, theme);
+  };
+
+  // Sincroniza el favicon con el tema ya fijado por el script anti-flash.
+  if (favicon) {
+    favicon.href = faviconFor(root.classList.contains('dark') ? 'dark' : 'light');
+  }
+
+  toggle?.addEventListener('click', () => {
+    applyTheme(root.classList.contains('dark') ? 'light' : 'dark');
+  });
+
+  // Sigue la preferencia del sistema solo si el usuario no eligió manualmente.
+  window
+    .matchMedia('(prefers-color-scheme: dark)')
+    .addEventListener('change', (event) => {
+      if (!localStorage.getItem(STORAGE_KEY)) {
+        applyTheme(event.matches ? 'dark' : 'light', false);
+      }
+    });
+</script>

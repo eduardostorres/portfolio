@@ -1,0 +1,165 @@
+---
+import '@fontsource/space-mono/400.css';
+import '@fontsource/space-mono/700.css';
+import '../styles/global.css';
+
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { translations, defaultLang, getTranslation } from '../i18n';
+
+const t = getTranslation(defaultLang);
+
+// URLs absolutas para canonical / Open Graph.
+const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url).toString();
+const ogImage = new URL('/og.svg', Astro.site ?? Astro.url).toString();
+
+// Datos de i18n serializados para el runtime (cambio de idioma sin recarga).
+const i18nData = JSON.stringify({ translations, defaultLang });
+---
+
+<!doctype html>
+<html lang={defaultLang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link id="favicon" rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href={canonical} />
+    <meta name="generator" content={Astro.generator} />
+
+    <title data-i18n="meta.title">{t.meta.title}</title>
+    <meta name="description" content={t.meta.description} />
+    <meta name="author" content="Eduardo S." />
+
+    <meta
+      name="theme-color"
+      content="#ffffff"
+      media="(prefers-color-scheme: light)"
+    />
+    <meta
+      name="theme-color"
+      content="#0a0a0a"
+      media="(prefers-color-scheme: dark)"
+    />
+
+    {/* Open Graph */}
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:title" content={t.meta.title} />
+    <meta property="og:description" content={t.meta.description} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:locale" content="es_MX" />
+    <meta property="og:locale:alternate" content="en_US" />
+
+    {/* Twitter */}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={t.meta.title} />
+    <meta name="twitter:description" content={t.meta.description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    {/*
+      Fija el tema antes del primer pintado para evitar el "flash"
+      de color. Script clásico y bloqueante a propósito.
+    */}
+    <script is:inline>
+      (() => {
+        try {
+          const stored = localStorage.getItem('theme');
+          const theme =
+            stored ??
+            (matchMedia('(prefers-color-scheme: dark)').matches
+              ? 'dark'
+              : 'light');
+          document.documentElement.classList.toggle('dark', theme === 'dark');
+          document.documentElement.style.colorScheme = theme;
+        } catch (_) {}
+      })();
+    </script>
+  </head>
+
+  <body class="flex min-h-dvh flex-col antialiased">
+    <Header />
+
+    <main class="flex flex-1 items-center justify-center px-6 py-16 sm:px-8">
+      <slot />
+    </main>
+
+    <Footer />
+
+    {/* Diccionarios para el runtime de i18n (ambos idiomas pesan unos pocos bytes). */}
+    <script is:inline type="application/json" id="i18n-data" set:html={i18nData}
+    ></script>
+
+    {/*
+      Aplica el idioma activo (localStorage → navegador → por defecto) antes
+      del pintado y cablea el selector. Sin recargas, sin dependencias.
+    */}
+    <script is:inline>
+      (() => {
+        const dataNode = document.getElementById('i18n-data');
+        if (!dataNode) return;
+
+        const { translations, defaultLang } = JSON.parse(dataNode.textContent);
+        const supported = Object.keys(translations);
+
+        const resolve = (dict, path) =>
+          path.split('.').reduce((acc, key) => (acc == null ? acc : acc[key]), dict);
+
+        const setMeta = (selector, value) => {
+          if (value == null) return;
+          document
+            .querySelectorAll(selector)
+            .forEach((el) => el.setAttribute('content', value));
+        };
+
+        const apply = (lang) => {
+          const dict = translations[lang] ?? translations[defaultLang];
+          document.documentElement.lang = lang;
+
+          document.querySelectorAll('[data-i18n]').forEach((el) => {
+            const value = resolve(dict, el.dataset.i18n);
+            if (value != null) el.textContent = value;
+          });
+
+          document.querySelectorAll('[data-i18n-aria]').forEach((el) => {
+            const value = resolve(dict, el.dataset.i18nAria);
+            if (value != null) el.setAttribute('aria-label', value);
+          });
+
+          const description = resolve(dict, 'meta.description');
+          setMeta(
+            'meta[name="description"], meta[property="og:description"], meta[name="twitter:description"]',
+            description,
+          );
+          const title = resolve(dict, 'meta.title');
+          setMeta('meta[property="og:title"], meta[name="twitter:title"]', title);
+
+          document.querySelectorAll('[data-lang-option]').forEach((btn) => {
+            btn.setAttribute(
+              'aria-pressed',
+              String(btn.dataset.langOption === lang),
+            );
+          });
+        };
+
+        const stored = localStorage.getItem('lang');
+        const fromBrowser = supported.find((lang) =>
+          (navigator.language || '').toLowerCase().startsWith(lang),
+        );
+        const initial =
+          (stored && supported.includes(stored) && stored) ||
+          fromBrowser ||
+          defaultLang;
+
+        apply(initial);
+
+        document.querySelectorAll('[data-lang-option]').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const lang = btn.dataset.langOption;
+            localStorage.setItem('lang', lang);
+            apply(lang);
+          });
+        });
+      })();
+    </script>
+  </body>
+</html>

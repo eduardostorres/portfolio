@@ -1,0 +1,27 @@
+---
+import { getTranslation, defaultLang } from '../i18n';
+import LanguageSwitcher from './LanguageSwitcher.astro';
+import ThemeToggle from './ThemeToggle.astro';
+
+const t = getTranslation(defaultLang);
+---
+
+<header class="w-full">
+  <div
+    class="reveal-fade mx-auto flex w-full max-w-5xl items-center justify-between px-6 py-6 sm:px-8 sm:py-7"
+  >
+    <a
+      href="/"
+      aria-label={t.a11y.home}
+      data-i18n-aria="a11y.home"
+      class="text-base font-bold tracking-tight text-foreground duration-200 hover:opacity-70 focus-visible:opacity-70"
+    >
+      ES<span class="text-accent" aria-hidden="true">.</span>
+    </a>
+
+    <div class="flex items-center gap-2 sm:gap-3">
+      <LanguageSwitcher />
+      <ThemeToggle />
+    </div>
+  </div>
+</header>

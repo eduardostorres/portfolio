@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="Eduardo Sebastián Sánchez Torres — Personal website">
+  <rect width="1200" height="630" fill="#ffffff" />
+  <rect x="0.5" y="0.5" width="1199" height="629" fill="none" stroke="#0a0a0a" stroke-opacity="0.08" />
+
+  <g font-family="'Space Mono', ui-monospace, monospace">
+    <circle cx="100" cy="232" r="9" fill="#eab308" />
+    <text x="100" y="320" font-size="68" font-weight="700" fill="#0a0a0a">Eduardo Sebastián</text>
+    <text x="100" y="404" font-size="68" font-weight="700" fill="#0a0a0a">Sánchez Torres</text>
+    <text x="100" y="486" font-size="28" fill="#52525b">Personal website — Currently under construction.</text>
+  </g>
+</svg>
