@@ -6,7 +6,7 @@
  */
 export const es = {
   meta: {
-    title: 'Eduardo S. | Portfolio',
+    title: 'Eduardo S. | Portafolio',
     description:
       'Sitio web personal de Eduardo S. | Actualmente en construcción.',
   },
