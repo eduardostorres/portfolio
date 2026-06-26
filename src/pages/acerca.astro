@@ -2,33 +2,48 @@
 import Layout from '../layouts/Layout.astro';
 import { getTranslation, defaultLang } from '../i18n';
 
+/**
+ * Página «Acerca»: ensayo bilingüe. El texto vive en i18n (es/en); aquí se
+ * renderiza el idioma por defecto y el runtime de `Layout.astro` lo intercambia
+ * con el selector del header gracias a los atributos `data-i18n`.
+ */
 const t = getTranslation(defaultLang);
+
+const body = [
+  'p1', 'p2', 'p3', 'p4', 'p5', 'p6', 'p7', 'p8',
+  'p9', 'p10', 'p11', 'p12', 'p13', 'p14', 'p15',
+] as const;
+const closing = ['close1', 'close2', 'close3'] as const;
 ---
 
 <Layout titleKey="pages.about.meta">
-  <section class="flex w-full max-w-2xl flex-col items-center text-center">
-    <span
-      class="reveal inline-flex items-center gap-2 rounded-full border border-border px-3.5 py-1.5 text-xs tracking-wide text-muted"
-      style="animation-delay: 0ms"
-      data-i18n="common.soon"
-    >
-      {t.common.soon}
-    </span>
+  <article class="reveal-fade mx-auto w-full max-w-2xl">
+    <h1 class="font-bold" data-i18n="about.heading">{t.about.heading}</h1>
 
-    <h1
-      class="reveal mt-8 text-balance text-[clamp(2rem,6vw,3.5rem)] font-bold leading-[1.08] tracking-tight text-foreground"
-      style="animation-delay: 90ms"
-      data-i18n="pages.about.title"
-    >
-      {t.pages.about.title}
-    </h1>
+    {/* ── Ensayo ───────────────────────────────────────────────────── */}
+    <div>
+      {
+        body.map((key) => (
+          <p class="mt-8 text-sm text-pretty" data-i18n={`about.${key}`}>
+            {t.about[key]}
+          </p>
+        ))
+      }
+    </div>
 
-    <p
-      class="reveal mt-5 text-base text-muted sm:text-lg"
-      style="animation-delay: 180ms"
-      data-i18n="pages.about.intro"
-    >
-      {t.pages.about.intro}
+    {/* ── Cierre ───────────────────────────────────────────────────── */}
+    <div>
+      {
+        closing.map((key) => (
+          <p class="mt-8 text-sm text-pretty" data-i18n={`about.${key}`}>
+            {t.about[key]}
+          </p>
+        ))
+      }
+    </div>
+
+    <p class="mt-8 text-sm text-pretty" data-i18n="about.close4">
+      {t.about.close4}
     </p>
-  </section>
+  </article>
 </Layout>
