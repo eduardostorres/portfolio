@@ -24,7 +24,7 @@ const closing = ['close1', 'close2', 'close3'] as const;
     <div>
       {
         body.map((key) => (
-          <p class="mt-8 text-sm text-pretty" data-i18n={`about.${key}`}>
+          <p class="mt-8 text-xs text-pretty" data-i18n={`about.${key}`}>
             {t.about[key]}
           </p>
         ))
@@ -35,14 +35,14 @@ const closing = ['close1', 'close2', 'close3'] as const;
     <div>
       {
         closing.map((key) => (
-          <p class="mt-8 text-sm text-pretty" data-i18n={`about.${key}`}>
+          <p class="mt-8 text-xs text-pretty" data-i18n={`about.${key}`}>
             {t.about[key]}
           </p>
         ))
       }
     </div>
 
-    <p class="mt-8 text-sm text-pretty" data-i18n="about.close4">
+    <p class="mt-8 text-xs text-pretty" data-i18n="about.close4">
       {t.about.close4}
     </p>
   </article>
