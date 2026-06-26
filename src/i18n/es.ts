@@ -8,19 +8,22 @@ export const es = {
   meta: {
     title: 'Eduardo S. | Portafolio',
     description:
-      'Sitio web personal de Eduardo S. | Actualmente en construcción.',
+      'La web personal de Eduardo S. Aún en construcción, pero ya casi.',
   },
   hero: {
     subtitle: 'Mi Portafolio',
-    status: 'Actualmente en construcción.',
+    status: 'En construcción',
   },
   footer: {
     rights: 'Todos los derechos reservados.',
   },
   a11y: {
-    home: 'Ir al inicio',
+    home: 'Volver al inicio',
     theme: 'Cambiar tema',
     language: 'Cambiar idioma',
-    social: 'Redes sociales',
+  },
+  social: {
+    work: 'Trabajo',
+    personal: 'Personal',
   },
 };

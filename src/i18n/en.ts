@@ -8,19 +8,22 @@ export const en = {
   meta: {
     title: 'Eduardo S. | Portfolio',
     description:
-      'Personal website of Eduardo S. | Currently under construction.',
+      "Eduardo S.'s personal site. Still building it, but almost there.",
   },
   hero: {
     subtitle: 'My Portfolio',
-    status: 'Currently under construction.',
+    status: 'Under construction',
   },
   footer: {
     rights: 'All rights reserved.',
   },
   a11y: {
-    home: 'Go to home',
+    home: 'Back to home',
     theme: 'Toggle theme',
     language: 'Change language',
-    social: 'Social links',
+  },
+  social: {
+    work: 'Work',
+    personal: 'Personal',
   },
 } satisfies Translation;
