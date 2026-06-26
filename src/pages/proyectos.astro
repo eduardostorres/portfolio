@@ -1,0 +1,34 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getTranslation, defaultLang } from '../i18n';
+
+const t = getTranslation(defaultLang);
+---
+
+<Layout titleKey="pages.projects.meta">
+  <section class="flex w-full max-w-2xl flex-col items-center text-center">
+    <span
+      class="reveal inline-flex items-center gap-2 rounded-full border border-border px-3.5 py-1.5 text-xs tracking-wide text-muted"
+      style="animation-delay: 0ms"
+      data-i18n="common.soon"
+    >
+      {t.common.soon}
+    </span>
+
+    <h1
+      class="reveal mt-8 text-balance text-[clamp(2rem,6vw,3.5rem)] font-bold leading-[1.08] tracking-tight text-foreground"
+      style="animation-delay: 90ms"
+      data-i18n="pages.projects.title"
+    >
+      {t.pages.projects.title}
+    </h1>
+
+    <p
+      class="reveal mt-5 text-base text-muted sm:text-lg"
+      style="animation-delay: 180ms"
+      data-i18n="pages.projects.intro"
+    >
+      {t.pages.projects.intro}
+    </p>
+  </section>
+</Layout>

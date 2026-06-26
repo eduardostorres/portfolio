@@ -4,11 +4,34 @@ import LanguageSwitcher from './LanguageSwitcher.astro';
 import ThemeToggle from './ThemeToggle.astro';
 
 const t = getTranslation(defaultLang);
+
+/**
+ * Enlaces de navegación. El orden aquí define el orden visual en ambos
+ * menús (escritorio y móvil). Las etiquetas se traducen en tiempo de
+ * ejecución vía `data-i18n` (ver el runtime en `Layout.astro`).
+ */
+const links = [
+  { href: '/', key: 'nav.home', label: t.nav.home },
+  { href: '/acerca', key: 'nav.about', label: t.nav.about },
+  { href: '/proyectos', key: 'nav.projects', label: t.nav.projects },
+  { href: '/blog', key: 'nav.blog', label: t.nav.blog },
+  { href: '/cv', key: 'nav.cv', label: t.nav.cv },
+  { href: '/contacto', key: 'nav.contact', label: t.nav.contact },
+] as const;
+
+// Normaliza la ruta actual (sin barra final) para comparar el enlace activo.
+const current = (() => {
+  const p = Astro.url.pathname;
+  return p.length > 1 && p.endsWith('/') ? p.slice(0, -1) : p;
+})();
+
+const isActive = (href: string): boolean =>
+  href === '/' ? current === '/' : current === href || current.startsWith(`${href}/`);
 ---
 
 <header class="w-full">
   <div
-    class="reveal-fade mx-auto flex w-full max-w-5xl items-center justify-between px-6 py-6 sm:px-8 sm:py-7"
+    class="reveal-fade mx-auto flex w-full max-w-5xl items-center justify-between gap-4 px-6 py-6 sm:px-8 sm:py-7"
   >
     <a
       href="/"
@@ -19,9 +42,121 @@ const t = getTranslation(defaultLang);
       ES<span class="text-accent" aria-hidden="true">.</span>
     </a>
 
+    {/* Navegación de escritorio */}
+    <nav
+      aria-label={t.a11y.nav}
+      data-i18n-aria="a11y.nav"
+      class="hidden lg:block"
+    >
+      <ul class="flex items-center gap-1">
+        {
+          links.map((link) => (
+            <li>
+              <a
+                href={link.href}
+                aria-current={isActive(link.href) ? 'page' : undefined}
+                data-i18n={link.key}
+                class="rounded-full px-3 py-1.5 text-sm text-muted duration-200 hover:text-foreground focus-visible:text-foreground aria-[current=page]:font-bold aria-[current=page]:text-foreground"
+              >
+                {link.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
     <div class="flex items-center gap-2 sm:gap-3">
       <LanguageSwitcher />
       <ThemeToggle />
+
+      {/* Disparador del menú móvil */}
+      <button
+        type="button"
+        id="nav-toggle"
+        aria-label={t.a11y.menu}
+        title={t.a11y.menu}
+        data-i18n-aria="a11y.menu"
+        aria-expanded="false"
+        aria-controls="mobile-nav"
+        class="group inline-flex h-10 w-10 items-center justify-center rounded-full border border-border text-muted duration-200 hover:border-foreground/20 hover:bg-foreground/[0.04] hover:text-foreground focus-visible:text-foreground lg:hidden"
+      >
+        {/* Hamburguesa: visible cuando el menú está cerrado */}
+        <svg
+          class="h-[18px] w-[18px] group-aria-[expanded=true]:hidden"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.75"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M3 6h18M3 12h18M3 18h18"></path>
+        </svg>
+
+        {/* Cerrar (X): visible cuando el menú está abierto */}
+        <svg
+          class="hidden h-[18px] w-[18px] group-aria-[expanded=true]:block"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.75"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M18 6 6 18M6 6l12 12"></path>
+        </svg>
+      </button>
     </div>
   </div>
+
+  {/* Navegación móvil: panel desplegable bajo la cabecera */}
+  <nav
+    id="mobile-nav"
+    aria-label={t.a11y.nav}
+    data-i18n-aria="a11y.nav"
+    hidden
+    class="border-t border-border lg:hidden"
+  >
+    <ul class="mx-auto flex w-full max-w-5xl flex-col px-4 py-2 sm:px-6">
+      {
+        links.map((link) => (
+          <li>
+            <a
+              href={link.href}
+              aria-current={isActive(link.href) ? 'page' : undefined}
+              data-i18n={link.key}
+              class="block rounded-lg px-3 py-2.5 text-sm text-muted duration-200 hover:bg-foreground/[0.04] hover:text-foreground focus-visible:text-foreground aria-[current=page]:font-bold aria-[current=page]:text-foreground"
+            >
+              {link.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
 </header>
+
+<script>
+  const toggle = document.getElementById('nav-toggle');
+  const panel = document.getElementById('mobile-nav');
+
+  const setOpen = (open: boolean): void => {
+    toggle?.setAttribute('aria-expanded', String(open));
+    if (panel) panel.hidden = !open;
+  };
+
+  toggle?.addEventListener('click', () => {
+    setOpen(toggle.getAttribute('aria-expanded') !== 'true');
+  });
+
+  // Cierra con Escape y devuelve el foco al disparador.
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && toggle?.getAttribute('aria-expanded') === 'true') {
+      setOpen(false);
+      toggle.focus();
+    }
+  });
+</script>

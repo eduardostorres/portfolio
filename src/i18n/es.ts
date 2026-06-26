@@ -14,13 +14,53 @@ export const es = {
     subtitle: 'Mi Portafolio',
     status: 'En construcción',
   },
+  nav: {
+    home: 'Inicio',
+    about: 'Acerca',
+    projects: 'Proyectos',
+    blog: 'Blog',
+    cv: 'CV',
+    contact: 'Contacto',
+  },
+  pages: {
+    about: {
+      title: 'Acerca',
+      meta: 'Acerca · Eduardo S.',
+      intro: 'Un poco sobre mí, mi trayectoria y lo que me mueve.',
+    },
+    projects: {
+      title: 'Proyectos',
+      meta: 'Proyectos · Eduardo S.',
+      intro: 'Una selección de proyectos en los que he trabajado.',
+    },
+    blog: {
+      title: 'Blog',
+      meta: 'Blog · Eduardo S.',
+      intro: 'Notas y artículos sobre desarrollo, diseño y tecnología.',
+    },
+    cv: {
+      title: 'CV',
+      meta: 'CV · Eduardo S.',
+      intro: 'Mi experiencia, formación y habilidades en un vistazo.',
+    },
+    contact: {
+      title: 'Contacto',
+      meta: 'Contacto · Eduardo S.',
+      intro: '¿Quieres hablar? Escríbeme y con gusto te respondo.',
+    },
+  },
   footer: {
     rights: 'Todos los derechos reservados.',
+  },
+  common: {
+    soon: 'Próximamente',
   },
   a11y: {
     home: 'Volver al inicio',
     theme: 'Cambiar tema',
     language: 'Cambiar idioma',
+    nav: 'Navegación principal',
+    menu: 'Abrir menú',
   },
   social: {
     work: 'Trabajo',

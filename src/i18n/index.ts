@@ -33,3 +33,19 @@ export function isLang(value: string | null | undefined): value is Lang {
 export function getTranslation(lang: Lang): Translation {
   return translations[lang];
 }
+
+/**
+ * Resuelve un valor del diccionario por ruta con puntos
+ * (p. ej. `"pages.about.meta"`). Misma forma que el resolutor del runtime
+ * en `Layout.astro`, para usarlo en el render del servidor.
+ */
+export function tPath(lang: Lang, path: string): string | undefined {
+  const value = path
+    .split('.')
+    .reduce<unknown>(
+      (acc, key) =>
+        acc == null ? acc : (acc as Record<string, unknown>)[key],
+      translations[lang],
+    );
+  return typeof value === 'string' ? value : undefined;
+}
