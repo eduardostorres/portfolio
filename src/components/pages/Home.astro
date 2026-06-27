@@ -1,0 +1,46 @@
+---
+import SocialLinks from '../SocialLinks.astro';
+import { getTranslation, type Lang } from '../../i18n';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = getTranslation(lang);
+const name = 'EDUARDO S.';
+---
+
+<section class="flex w-full max-w-2xl flex-col items-center text-center">
+  {/* Badge de estado */}
+  <span
+    class="reveal inline-flex items-center gap-2.5 rounded-full border border-border px-3.5 py-1.5 text-xs tracking-wide text-muted"
+    style="animation-delay: 0ms"
+  >
+    <span class="relative flex h-1.5 w-1.5" aria-hidden="true">
+      <span
+        class="ping-soft absolute inline-flex h-full w-full rounded-full bg-accent"
+      ></span>
+      <span class="relative inline-flex h-1.5 w-1.5 rounded-full bg-accent"></span>
+    </span>
+    <span>{t.hero.status}</span>
+  </span>
+
+  <h1
+    class="reveal mt-8 text-balance text-[clamp(2rem,6vw,3.5rem)] font-bold leading-[1.08] tracking-tight text-foreground"
+    style="animation-delay: 90ms"
+  >
+    {name}
+  </h1>
+
+  <p
+    class="reveal mt-5 text-base text-muted sm:text-lg"
+    style="animation-delay: 180ms"
+  >
+    {t.hero.subtitle}
+  </p>
+
+  <div class="reveal mt-12 sm:mt-14" style="animation-delay: 270ms">
+    <SocialLinks lang={lang} />
+  </div>
+</section>

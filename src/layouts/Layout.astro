@@ -5,32 +5,49 @@ import '../styles/global.css';
 
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import { translations, defaultLang, getTranslation, tPath } from '../i18n';
+import {
+  getTranslation,
+  routes,
+  supportedLangs,
+  defaultLang,
+  type Lang,
+  type RouteKey,
+} from '../i18n';
 
 interface Props {
+  /** Idioma de esta página. Define el render del servidor y `<html lang>`. */
+  lang: Lang;
   /**
-   * Ruta i18n para el <title> del documento (p. ej. `"pages.about.meta"`).
-   * Por defecto, el título del sitio. El runtime de i18n la usa también
-   * para traducir el título al cambiar de idioma.
+   * Página actual (clave estable de `routes`). Se usa para resolver el título,
+   * los enlaces alternos por idioma (hreflang) y el estado activo del menú.
    */
-  titleKey?: string;
+  page: RouteKey;
 }
 
-const { titleKey = 'meta.title' } = Astro.props;
+const { lang, page } = Astro.props;
 
-const t = getTranslation(defaultLang);
-const docTitle = tPath(defaultLang, titleKey) ?? t.meta.title;
+const t = getTranslation(lang);
 
-// URLs absolutas para canonical / Open Graph.
-const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url).toString();
-const ogImage = new URL('/og.svg', Astro.site ?? Astro.url).toString();
+// El título sale del diccionario: la portada usa el título del sitio; el resto,
+// el `meta` de su página. El `?? home` es solo un respaldo de tipos.
+const docTitle = page === 'home' ? t.meta.title : t.pages[page].meta;
 
-// Datos de i18n serializados para el runtime (cambio de idioma sin recarga).
-const i18nData = JSON.stringify({ translations, defaultLang });
+// URLs absolutas para canonical / Open Graph / hreflang, derivadas del mapa de
+// rutas para que coincidan con los enlaces alternos.
+const siteUrl = Astro.site ?? Astro.url;
+const canonical = new URL(routes[page][lang], siteUrl).toString();
+const ogImage = new URL('/og.svg', siteUrl).toString();
+
+const ogLocale = lang === 'es' ? 'es_MX' : 'en_US';
+const ogLocaleAlt = lang === 'es' ? 'en_US' : 'es_MX';
+
+// URLs de esta misma página por idioma, para que el detector de idioma del
+// cliente pueda redirigir al equivalente sin recargar de más.
+const altLinks = JSON.stringify(routes[page]);
 ---
 
 <!doctype html>
-<html lang={defaultLang}>
+<html lang={lang}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -38,7 +55,23 @@ const i18nData = JSON.stringify({ translations, defaultLang });
     <link rel="canonical" href={canonical} />
     <meta name="generator" content={Astro.generator} />
 
-    <title data-i18n={titleKey}>{docTitle}</title>
+    {/* Enlaces alternos por idioma para la misma página. */}
+    {
+      supportedLangs.map((l) => (
+        <link
+          rel="alternate"
+          hreflang={l}
+          href={new URL(routes[page][l], siteUrl).toString()}
+        />
+      ))
+    }
+    <link
+      rel="alternate"
+      hreflang="x-default"
+      href={new URL(routes[page][defaultLang], siteUrl).toString()}
+    />
+
+    <title>{docTitle}</title>
     <meta name="description" content={t.meta.description} />
     <meta name="author" content="Eduardo S." />
 
@@ -59,8 +92,8 @@ const i18nData = JSON.stringify({ translations, defaultLang });
     <meta property="og:title" content={docTitle} />
     <meta property="og:description" content={t.meta.description} />
     <meta property="og:image" content={ogImage} />
-    <meta property="og:locale" content="es_MX" />
-    <meta property="og:locale:alternate" content="en_US" />
+    <meta property="og:locale" content={ogLocale} />
+    <meta property="og:locale:alternate" content={ogLocaleAlt} />
 
     {/* Twitter */}
     <meta name="twitter:card" content="summary_large_image" />
@@ -86,92 +119,51 @@ const i18nData = JSON.stringify({ translations, defaultLang });
         } catch (_) {}
       })();
     </script>
+
+    {/* URLs de esta página por idioma, para el detector de abajo. */}
+    <script is:inline type="application/json" id="i18n-routes" set:html={altLinks}
+    ></script>
+
+    {/*
+      Detección de idioma: si el usuario tiene una preferencia (selector) o su
+      navegador apunta a otro idioma disponible, redirige a la versión equivalente
+      de ESTA página antes de pintar. La preferencia explícita manda sobre el
+      navegador; `location.replace` evita ensuciar el historial y bucles.
+    */}
+    <script is:inline>
+      (() => {
+        try {
+          const node = document.getElementById('i18n-routes');
+          if (!node) return;
+
+          const alt = JSON.parse(node.textContent); // { es: '/…', en: '/en/…' }
+          const supported = Object.keys(alt);
+          const current = document.documentElement.lang;
+
+          const stored = localStorage.getItem('lang');
+          const fromBrowser = supported.find((l) =>
+            (navigator.language || '').toLowerCase().startsWith(l),
+          );
+          const preferred =
+            (stored && supported.includes(stored) && stored) ||
+            fromBrowser ||
+            current;
+
+          if (preferred !== current && alt[preferred]) {
+            location.replace(alt[preferred]);
+          }
+        } catch (_) {}
+      })();
+    </script>
   </head>
 
   <body class="flex min-h-dvh flex-col antialiased">
-    <Header />
+    <Header lang={lang} page={page} />
 
     <main class="flex flex-1 items-center justify-center px-6 py-6 sm:px-6">
       <slot />
     </main>
 
-    <Footer />
-
-    {/* Diccionarios para el runtime de i18n (ambos idiomas pesan unos pocos bytes). */}
-    <script is:inline type="application/json" id="i18n-data" set:html={i18nData}
-    ></script>
-
-    {/*
-      Aplica el idioma activo (localStorage → navegador → por defecto) antes
-      del pintado y cablea el selector. Sin recargas, sin dependencias.
-    */}
-    <script is:inline>
-      (() => {
-        const dataNode = document.getElementById('i18n-data');
-        if (!dataNode) return;
-
-        const { translations, defaultLang } = JSON.parse(dataNode.textContent);
-        const supported = Object.keys(translations);
-
-        const resolve = (dict, path) =>
-          path.split('.').reduce((acc, key) => (acc == null ? acc : acc[key]), dict);
-
-        const setMeta = (selector, value) => {
-          if (value == null) return;
-          document
-            .querySelectorAll(selector)
-            .forEach((el) => el.setAttribute('content', value));
-        };
-
-        const apply = (lang) => {
-          const dict = translations[lang] ?? translations[defaultLang];
-          document.documentElement.lang = lang;
-
-          document.querySelectorAll('[data-i18n]').forEach((el) => {
-            const value = resolve(dict, el.dataset.i18n);
-            if (value != null) el.textContent = value;
-          });
-
-          document.querySelectorAll('[data-i18n-aria]').forEach((el) => {
-            const value = resolve(dict, el.dataset.i18nAria);
-            if (value != null) el.setAttribute('aria-label', value);
-          });
-
-          const description = resolve(dict, 'meta.description');
-          setMeta(
-            'meta[name="description"], meta[property="og:description"], meta[name="twitter:description"]',
-            description,
-          );
-          const title = resolve(dict, 'meta.title');
-          setMeta('meta[property="og:title"], meta[name="twitter:title"]', title);
-
-          document.querySelectorAll('[data-lang-option]').forEach((btn) => {
-            btn.setAttribute(
-              'aria-pressed',
-              String(btn.dataset.langOption === lang),
-            );
-          });
-        };
-
-        const stored = localStorage.getItem('lang');
-        const fromBrowser = supported.find((lang) =>
-          (navigator.language || '').toLowerCase().startsWith(lang),
-        );
-        const initial =
-          (stored && supported.includes(stored) && stored) ||
-          fromBrowser ||
-          defaultLang;
-
-        apply(initial);
-
-        document.querySelectorAll('[data-lang-option]').forEach((btn) => {
-          btn.addEventListener('click', () => {
-            const lang = btn.dataset.langOption;
-            localStorage.setItem('lang', lang);
-            apply(lang);
-          });
-        });
-      })();
-    </script>
+    <Footer lang={lang} />
   </body>
 </html>

@@ -1,7 +1,12 @@
 ---
-import { getTranslation, defaultLang } from '../i18n';
+import { getTranslation, type Lang } from '../i18n';
 
-const t = getTranslation(defaultLang);
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = getTranslation(lang);
 
 /**
  * Cada icono es un SVG inline (sin dependencias) que hereda `currentColor`,
@@ -48,19 +53,16 @@ const personal = [
 
 /**
  * Grupos de redes. `label` es el título visible; el `<nav>` toma su nombre
- * accesible de ese título vía `aria-labelledby`. La etiqueta se traduce en
- * tiempo de ejecución con `data-i18n`.
+ * accesible de ese título vía `aria-labelledby`.
  */
 const groups = [
   {
     id: 'social-work',
-    labelKey: 'social.work',
     label: t.social.work,
     items: work,
   },
   {
     id: 'social-personal',
-    labelKey: 'social.personal',
     label: t.social.personal,
     items: personal,
   },
@@ -73,7 +75,6 @@ const groups = [
       <section class="flex flex-col items-center gap-3">
         <h2
           id={group.id}
-          data-i18n={group.labelKey}
           class="px-1 text-[11px] font-medium uppercase tracking-[0.18em] text-muted"
         >
           {group.label}

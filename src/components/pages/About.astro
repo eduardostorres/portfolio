@@ -1,0 +1,44 @@
+---
+import { getTranslation, type Lang } from '../../i18n';
+
+/**
+ * Contenido de «Acerca»: ensayo bilingüe. El texto vive en i18n (es/en) y se
+ * renderiza en el idioma de la ruta.
+ */
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = getTranslation(lang);
+
+const body = [
+  'p1', 'p2', 'p3', 'p4', 'p5', 'p6', 'p7', 'p8',
+  'p9', 'p10', 'p11', 'p12', 'p13', 'p14', 'p15',
+] as const;
+const closing = ['close1', 'close2', 'close3'] as const;
+---
+
+<article class="reveal-fade mx-auto w-full max-w-2xl">
+  <h1 class="font-bold text-3xl">{t.about.heading}</h1>
+
+  {/* ── Ensayo ───────────────────────────────────────────────────── */}
+  <div>
+    {
+      body.map((key) => (
+        <p class="mt-8 text-xs text-pretty">{t.about[key]}</p>
+      ))
+    }
+  </div>
+
+  {/* ── Cierre ───────────────────────────────────────────────────── */}
+  <div>
+    {
+      closing.map((key) => (
+        <p class="mt-8 text-xs text-pretty">{t.about[key]}</p>
+      ))
+    }
+  </div>
+
+  <p class="mt-8 text-xs text-pretty">{t.about.close4}</p>
+</article>

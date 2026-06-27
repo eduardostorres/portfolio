@@ -1,7 +1,12 @@
 ---
-import { getTranslation, defaultLang } from '../i18n';
+import { getTranslation, type Lang } from '../i18n';
 
-const t = getTranslation(defaultLang);
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = getTranslation(lang);
 ---
 
 <button
@@ -9,7 +14,6 @@ const t = getTranslation(defaultLang);
   id="theme-toggle"
   aria-label={t.a11y.theme}
   title={t.a11y.theme}
-  data-i18n-aria="a11y.theme"
   class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-border text-muted duration-200 hover:border-foreground/20 hover:bg-foreground/[0.04] hover:text-foreground focus-visible:text-foreground"
 >
   {/* Sol: visible en modo oscuro (clic → claro) */}

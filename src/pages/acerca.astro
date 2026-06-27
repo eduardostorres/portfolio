@@ -1,49 +1,8 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { getTranslation, defaultLang } from '../i18n';
-
-/**
- * Página «Acerca»: ensayo bilingüe. El texto vive en i18n (es/en); aquí se
- * renderiza el idioma por defecto y el runtime de `Layout.astro` lo intercambia
- * con el selector del header gracias a los atributos `data-i18n`.
- */
-const t = getTranslation(defaultLang);
-
-const body = [
-  'p1', 'p2', 'p3', 'p4', 'p5', 'p6', 'p7', 'p8',
-  'p9', 'p10', 'p11', 'p12', 'p13', 'p14', 'p15',
-] as const;
-const closing = ['close1', 'close2', 'close3'] as const;
+import About from '../components/pages/About.astro';
 ---
 
-<Layout titleKey="pages.about.meta">
-  <article class="reveal-fade mx-auto w-full max-w-2xl">
-    <h1 class="font-bold text-3xl" data-i18n="about.heading">{t.about.heading}</h1>
-
-    {/* ── Ensayo ───────────────────────────────────────────────────── */}
-    <div>
-      {
-        body.map((key) => (
-          <p class="mt-8 text-xs text-pretty" data-i18n={`about.${key}`}>
-            {t.about[key]}
-          </p>
-        ))
-      }
-    </div>
-
-    {/* ── Cierre ───────────────────────────────────────────────────── */}
-    <div>
-      {
-        closing.map((key) => (
-          <p class="mt-8 text-xs text-pretty" data-i18n={`about.${key}`}>
-            {t.about[key]}
-          </p>
-        ))
-      }
-    </div>
-
-    <p class="mt-8 text-xs text-pretty" data-i18n="about.close4">
-      {t.about.close4}
-    </p>
-  </article>
+<Layout lang="es" page="about">
+  <About lang="es" />
 </Layout>

@@ -1,7 +1,12 @@
 ---
-import { getTranslation, defaultLang } from '../i18n';
+import { getTranslation, type Lang } from '../i18n';
 
-const t = getTranslation(defaultLang);
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = getTranslation(lang);
 const year = new Date().getFullYear();
 const name = 'Eduardo S.';
 ---
@@ -11,7 +16,7 @@ const name = 'Eduardo S.';
     <p class="reveal-fade text-center text-xs leading-relaxed text-muted">
       <span>&copy; {year} {name}</span>
       <span aria-hidden="true" class="mx-1.5">&middot;</span>
-      <span data-i18n="footer.rights">{t.footer.rights}</span>
+      <span>{t.footer.rights}</span>
     </p>
   </div>
 </footer>

@@ -1,32 +1,33 @@
 ---
-import { getTranslation, defaultLang } from '../i18n';
+import {
+  getTranslation,
+  routes,
+  routeKeys,
+  type Lang,
+  type RouteKey,
+} from '../i18n';
 import LanguageSwitcher from './LanguageSwitcher.astro';
 import ThemeToggle from './ThemeToggle.astro';
 
-const t = getTranslation(defaultLang);
+interface Props {
+  lang: Lang;
+  /** Página actual: marca el enlace activo y orienta el selector de idioma. */
+  page: RouteKey;
+}
+
+const { lang, page } = Astro.props;
+const t = getTranslation(lang);
 
 /**
- * Enlaces de navegación. El orden aquí define el orden visual en ambos
- * menús (escritorio y móvil). Las etiquetas se traducen en tiempo de
- * ejecución vía `data-i18n` (ver el runtime en `Layout.astro`).
+ * Enlaces de navegación, derivados del mapa de rutas. El orden de `routeKeys`
+ * define el orden visual en ambos menús (escritorio y móvil); el slug sale de
+ * `routes[key][lang]` y la etiqueta del diccionario `nav`.
  */
-const links = [
-  { href: '/', key: 'nav.home', label: t.nav.home },
-  { href: '/acerca', key: 'nav.about', label: t.nav.about },
-  { href: '/proyectos', key: 'nav.projects', label: t.nav.projects },
-  { href: '/blog', key: 'nav.blog', label: t.nav.blog },
-  { href: '/cv', key: 'nav.cv', label: t.nav.cv },
-  { href: '/contacto', key: 'nav.contact', label: t.nav.contact },
-] as const;
-
-// Normaliza la ruta actual (sin barra final) para comparar el enlace activo.
-const current = (() => {
-  const p = Astro.url.pathname;
-  return p.length > 1 && p.endsWith('/') ? p.slice(0, -1) : p;
-})();
-
-const isActive = (href: string): boolean =>
-  href === '/' ? current === '/' : current === href || current.startsWith(`${href}/`);
+const links = routeKeys.map((key) => ({
+  key,
+  href: routes[key][lang],
+  label: t.nav[key],
+}));
 ---
 
 <header class="w-full">
@@ -34,28 +35,22 @@ const isActive = (href: string): boolean =>
     class="reveal-fade mx-auto flex w-full max-w-5xl items-center justify-between gap-4 px-6 py-6 sm:px-8 sm:py-7"
   >
     <a
-      href="/"
+      href={routes.home[lang]}
       aria-label={t.a11y.home}
-      data-i18n-aria="a11y.home"
       class="text-base font-bold tracking-tight text-foreground duration-200 hover:opacity-70 focus-visible:opacity-70"
     >
       ES<span class="text-accent" aria-hidden="true">.</span>
     </a>
 
     {/* Navegación de escritorio */}
-    <nav
-      aria-label={t.a11y.nav}
-      data-i18n-aria="a11y.nav"
-      class="hidden lg:block"
-    >
+    <nav aria-label={t.a11y.nav} class="hidden lg:block">
       <ul class="flex items-center gap-1">
         {
           links.map((link) => (
             <li>
               <a
                 href={link.href}
-                aria-current={isActive(link.href) ? 'page' : undefined}
-                data-i18n={link.key}
+                aria-current={link.key === page ? 'page' : undefined}
                 class="rounded-full px-3 py-1.5 text-sm text-muted duration-200 hover:text-foreground focus-visible:text-foreground aria-[current=page]:font-bold aria-[current=page]:text-foreground"
               >
                 {link.label}
@@ -67,8 +62,8 @@ const isActive = (href: string): boolean =>
     </nav>
 
     <div class="flex items-center gap-2 sm:gap-3">
-      <LanguageSwitcher />
-      <ThemeToggle />
+      <LanguageSwitcher lang={lang} page={page} />
+      <ThemeToggle lang={lang} />
 
       {/* Disparador del menú móvil */}
       <button
@@ -76,7 +71,6 @@ const isActive = (href: string): boolean =>
         id="nav-toggle"
         aria-label={t.a11y.menu}
         title={t.a11y.menu}
-        data-i18n-aria="a11y.menu"
         aria-expanded="false"
         aria-controls="mobile-nav"
         class="group inline-flex h-10 w-10 items-center justify-center rounded-full border border-border text-muted duration-200 hover:border-foreground/20 hover:bg-foreground/[0.04] hover:text-foreground focus-visible:text-foreground lg:hidden"
@@ -116,7 +110,6 @@ const isActive = (href: string): boolean =>
   <nav
     id="mobile-nav"
     aria-label={t.a11y.nav}
-    data-i18n-aria="a11y.nav"
     hidden
     class="border-t border-border lg:hidden"
   >
@@ -126,8 +119,7 @@ const isActive = (href: string): boolean =>
           <li>
             <a
               href={link.href}
-              aria-current={isActive(link.href) ? 'page' : undefined}
-              data-i18n={link.key}
+              aria-current={link.key === page ? 'page' : undefined}
               class="block rounded-lg px-3 py-2.5 text-sm text-muted duration-200 hover:bg-foreground/[0.04] hover:text-foreground focus-visible:text-foreground aria-[current=page]:font-bold aria-[current=page]:text-foreground"
             >
               {link.label}

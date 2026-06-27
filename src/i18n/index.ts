@@ -35,17 +35,34 @@ export function getTranslation(lang: Lang): Translation {
 }
 
 /**
- * Resuelve un valor del diccionario por ruta con puntos
- * (p. ej. `"pages.about.meta"`). Misma forma que el resolutor del runtime
- * en `Layout.astro`, para usarlo en el render del servidor.
+ * Mapa de rutas por idioma. La clave (`RouteKey`) identifica la página de forma
+ * estable; el slug cambia por idioma. El español (por defecto) vive sin prefijo
+ * y el inglés bajo `/en` con slugs traducidos.
+ *
+ * Es la fuente de verdad para:
+ *   - Los enlaces del menú (`Header`).
+ *   - El selector de idioma (`LanguageSwitcher`), que enlaza a la misma página
+ *     en el otro idioma.
+ *   - Los `<link rel="alternate" hreflang>` y la canónica (`Layout`).
+ *
+ * Para añadir una página: agrega una entrada aquí y crea sus archivos en
+ * `src/pages` (ES) y `src/pages/en` (EN).
  */
-export function tPath(lang: Lang, path: string): string | undefined {
-  const value = path
-    .split('.')
-    .reduce<unknown>(
-      (acc, key) =>
-        acc == null ? acc : (acc as Record<string, unknown>)[key],
-      translations[lang],
-    );
-  return typeof value === 'string' ? value : undefined;
+export const routes = {
+  home: { es: '/', en: '/en' },
+  about: { es: '/acerca', en: '/en/about' },
+  projects: { es: '/proyectos', en: '/en/projects' },
+  blog: { es: '/blog', en: '/en/blog' },
+  cv: { es: '/cv', en: '/en/cv' },
+  contact: { es: '/contacto', en: '/en/contact' },
+} as const satisfies Record<string, Record<Lang, string>>;
+
+/** Identificador estable de cada página con ruta propia. */
+export type RouteKey = keyof typeof routes;
+
+export const routeKeys = Object.keys(routes) as RouteKey[];
+
+/** Ruta de una página en un idioma dado (p. ej. `localizedPath('about','en')`). */
+export function localizedPath(key: RouteKey, lang: Lang): string {
+  return routes[key][lang];
 }
