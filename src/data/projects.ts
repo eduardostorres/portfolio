@@ -63,4 +63,23 @@ export const projects: Project[] = [
     repo: 'https://github.com/eduardostorres/kuxcal',
     demo: 'https://kuxcal.vercel.app/',
   },
+  {
+    title: { es: 'Salondieliss-Linktree', en: 'Salondieliss-Linktree' },
+    description: {
+      es: 'Sitio web estilo Linktree para SalonDiEliss, diseñado como una landing page ligera y responsiva, enfocada en convertir a los visitantes en citas por WhatsApp.',
+      en: 'Linktree-style website for SalonDiEliss, designed as a lightweight, responsive landing page focused on turning visitors into WhatsApp appointments.',
+    },
+    tech: ['astro', 'typescript'],
+    year: 2026,
+    demo: 'https://salondieliss.com/',
+  },
+  {
+    title: { es: 'Vault', en: 'Vault' },
+    description: {
+      es: 'En construcción.',
+      en: 'In progress.',
+    },
+    tech: ['astro', 'javascript'],
+    year: 2026
+  },
 ];
