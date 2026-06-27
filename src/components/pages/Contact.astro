@@ -1,0 +1,36 @@
+---
+import SocialLinks from '../SocialLinks.astro';
+import { getTranslation, type Lang } from '../../i18n';
+
+/**
+ * Página de Contacto: título, una breve invitación y los enlaces a redes
+ * (laborales y personales), que antes vivían en la portada.
+ */
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = getTranslation(lang);
+const content = t.pages.contact;
+---
+
+<section class="flex w-full max-w-3xl flex-col items-center text-center">
+  <h1
+    class="reveal text-balance text-[clamp(2rem,6vw,3.5rem)] font-bold leading-[1.08] tracking-tight text-foreground"
+    style="animation-delay: 0ms"
+  >
+    {content.title}
+  </h1>
+
+  <p
+    class="reveal mt-5 text-sm text-muted"
+    style="animation-delay: 90ms"
+  >
+    {content.intro}
+  </p>
+
+  <div class="reveal mt-12 sm:mt-14" style="animation-delay: 180ms">
+    <SocialLinks lang={lang} />
+  </div>
+</section>

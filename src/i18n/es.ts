@@ -8,7 +8,7 @@ export const es = {
   meta: {
     title: 'Eduardo S. | Portafolio',
     description:
-      'La web personal de Eduardo S. Aún en construcción, pero ya casi.',
+      'Portafolio de Eduardo Sebastián Sánchez Torres, desarrollador backend y full stack. Proyectos, experiencia y notas sobre desarrollo de software, arquitectura y buenas prácticas.',
   },
   hero: {
     subtitle: 'Mi Portafolio',
@@ -25,34 +25,55 @@ export const es = {
   pages: {
     about: {
       title: 'Acerca',
-      meta: 'Acerca · Eduardo S.',
+      meta: 'Eduardo S. | Acerca',
       intro: 'Un poco sobre mí, mi trayectoria y lo que me mueve.',
+      description:
+        'Conoce a Eduardo Sebastián Sánchez Torres: su trayectoria como desarrollador backend y full stack, su forma de trabajar y lo que le mueve.',
     },
     projects: {
       title: 'Proyectos',
-      meta: 'Proyectos · Eduardo S.',
+      meta: 'Eduardo S. | Proyectos',
       intro: 'Una selección de proyectos en los que he trabajado.',
+      description:
+        'Proyectos de Eduardo S.: aplicaciones web, APIs, sistemas y automatizaciones. Filtra por tecnología: TypeScript, Node.js, React, Astro, Python y más.',
     },
     blog: {
       title: 'Blog',
-      meta: 'Blog · Eduardo S.',
+      meta: 'Eduardo S. | Blog',
       intro: 'Notas y artículos sobre desarrollo, diseño y tecnología.',
+      description:
+        'Artículos y notas de Eduardo S. sobre desarrollo de software, arquitectura, diseño y tecnología.',
     },
     cv: {
       title: 'CV',
-      meta: 'CV · Eduardo S.',
+      meta: 'Eduardo S. | CV',
       intro: 'Mi experiencia, formación y habilidades en un vistazo.',
+      description:
+        'Currículum de Eduardo Sebastián Sánchez Torres: experiencia, formación y habilidades como desarrollador backend y full stack.',
     },
     contact: {
       title: 'Contacto',
-      meta: 'Contacto · Eduardo S.',
+      meta: 'Eduardo S. | Contacto',
       intro: '¿Quieres hablar? Escríbeme y con gusto te respondo.',
+      description:
+        'Ponte en contacto con Eduardo S. para proyectos, colaboraciones o consultas sobre desarrollo de software.',
     },
+  },
+  projectsFilter: {
+    label: 'Filtrar por tecnología',
+    all: 'Todas las tecnologías',
+  },
+  projectsList: {
+    code: 'Código',
+    demo: 'Demo',
+    empty: 'Aún no hay proyectos con esta tecnología.',
+    countSingular: 'proyecto',
+    countPlural: 'proyectos',
   },
   about: {
     heading: 'Sobre mí',
     p1: `Hay una idea que ha permanecido conmigo desde que escribí mis primeras líneas de código: el software tiene la capacidad de convertir una idea en una herramienta que transforma la forma en que las personas trabajan, se comunican y resuelven problemas. Esa posibilidad fue lo que despertó mi interés por el desarrollo de software y, con el tiempo, terminó convirtiéndose en una profesión que disfruto ejercer cada día.`,
-    p2: `Soy Eduardo Sebastián Sánchez Torres, desarrollador backend y full stack, con más de cuatro años de experiencia diseñando y construyendo aplicaciones web, sistemas ERP, APIs REST y SOAP, así como integraciones para procesos empresariales donde la estabilidad, la seguridad y la confiabilidad no son características deseables, sino requisitos indispensables.`,
+    p2: `¡Hola! Mi nombre es Eduardo Sebastián Sánchez Torres, soy ingeniero en Redes y Software, especializado en desarrollo full stack con enfoque en desarrollo backend con más de cuatro años de experiencia diseñando y construyendo aplicaciones web, sistemas ERP, APIs REST y SOAP, así como integraciones para procesos empresariales donde la estabilidad, la seguridad y la confiabilidad no son características deseables, sino requisitos indispensables.`,
     p3: `Desde el inicio de mi carrera descubrí que escribir código es solo una parte del trabajo. La verdadera dificultad comienza cuando ese código debe mantenerse durante años, crecer junto con un producto y seguir siendo comprensible para quienes lo desarrollarán en el futuro. Fue entonces cuando dejé de preguntarme únicamente «¿funciona?» y empecé a hacerme preguntas diferentes: ¿es fácil de mantener?, ¿es escalable?, ¿explica claramente su intención?, ¿resuelve el problema correcto?`,
     p4: `Esas preguntas siguen guiando cada proyecto en el que participo.`,
     p5: `Con el paso del tiempo entendí que las tecnologías son herramientas, no objetivos. Hoy puedo desarrollar con PHP, Laravel, CodeIgniter, Node.js, Express, Python, React, Astro o TypeScript, pero ninguna de ellas define mi trabajo. Lo que realmente intento construir son soluciones que permanezcan útiles cuando la tecnología inevitablemente evolucione.`,

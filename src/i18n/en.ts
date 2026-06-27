@@ -8,7 +8,7 @@ export const en = {
   meta: {
     title: 'Eduardo S. | Portfolio',
     description:
-      "Eduardo S.'s personal site. Still building it, but almost there.",
+      'Portfolio of Eduardo Sebastián Sánchez Torres, a backend and full stack developer. Projects, experience and notes on software development, architecture and best practices.',
   },
   hero: {
     subtitle: 'My Portfolio',
@@ -25,34 +25,55 @@ export const en = {
   pages: {
     about: {
       title: 'About',
-      meta: 'About · Eduardo S.',
+      meta: 'Eduardo S. | About',
       intro: 'A bit about me, my background and what drives me.',
+      description:
+        'Meet Eduardo Sebastián Sánchez Torres: his path as a backend and full stack developer, how he works and what drives him.',
     },
     projects: {
       title: 'Projects',
-      meta: 'Projects · Eduardo S.',
+      meta: 'Eduardo S. | Projects',
       intro: 'A selection of projects I have worked on.',
+      description:
+        'Projects by Eduardo S.: web apps, APIs, systems and automations. Filter by technology: TypeScript, Node.js, React, Astro, Python and more.',
     },
     blog: {
       title: 'Blog',
-      meta: 'Blog · Eduardo S.',
+      meta: 'Eduardo S. | Blog',
       intro: 'Notes and articles about development, design and tech.',
+      description:
+        'Articles and notes by Eduardo S. on software development, architecture, design and technology.',
     },
     cv: {
       title: 'CV',
-      meta: 'CV · Eduardo S.',
+      meta: 'Eduardo S. | CV',
       intro: 'My experience, education and skills at a glance.',
+      description:
+        "Eduardo Sebastián Sánchez Torres's résumé: experience, education and skills as a backend and full stack developer.",
     },
     contact: {
       title: 'Contact',
-      meta: 'Contact · Eduardo S.',
+      meta: 'Eduardo S. | Contact',
       intro: 'Want to talk? Drop me a line and I will gladly reply.',
+      description:
+        'Get in touch with Eduardo S. for projects, collaborations or software development inquiries.',
     },
+  },
+  projectsFilter: {
+    label: 'Filter by technology',
+    all: 'All technologies',
+  },
+  projectsList: {
+    code: 'Code',
+    demo: 'Demo',
+    empty: 'No projects with this technology yet.',
+    countSingular: 'project',
+    countPlural: 'projects',
   },
   about: {
     heading: 'About me',
     p1: `There is an idea that has stayed with me since I wrote my first lines of code: software can turn an idea into a tool that transforms the way people work, communicate and solve problems. That possibility is what sparked my interest in software development and, over time, grew into a profession I enjoy practicing every day.`,
-    p2: `I am Eduardo Sebastián Sánchez Torres, a backend and full stack developer with more than four years of experience designing and building web applications, ERP systems, REST and SOAP APIs, and integrations for business processes where stability, security and reliability are not desirable features but essential requirements.`,
+    p2: `Hi! My name is Eduardo Sebastián Sánchez Torres. I am a Network and Software Engineer specializing in full-stack development with a strong focus on backend technologies, with more than four years of professional experience, I have designed and built web applications, ERP systems, REST and SOAP APIs, and enterprise integrations. Throughout my career, I have focused on delivering solutions where stability, security, and reliability are not optional but fundamental requirements.`,
     p3: `Early in my career I discovered that writing code is only part of the job. The real difficulty begins when that code has to be maintained for years, grow alongside a product and stay understandable for whoever will work on it in the future. That is when I stopped asking only "does it work?" and began asking different questions: is it easy to maintain? Is it scalable? Does it clearly express its intent? Does it solve the right problem?`,
     p4: `Those questions still guide every project I take part in.`,
     p5: `Over time I understood that technologies are tools, not goals. Today I can build with PHP, Laravel, CodeIgniter, Node.js, Express, Python, React, Astro or TypeScript, but none of them defines my work. What I really try to build are solutions that stay useful when technology inevitably evolves.`,

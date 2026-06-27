@@ -1,6 +1,10 @@
 ---
 import '@fontsource/space-mono/400.css';
 import '@fontsource/space-mono/700.css';
+// URLs (con hash de build) de las fuentes, para precargarlas en <head> y
+// reducir el parpadeo de texto. Coinciden con las que pide el CSS de Fontsource.
+import spaceMono400 from '@fontsource/space-mono/files/space-mono-latin-400-normal.woff2?url';
+import spaceMono700 from '@fontsource/space-mono/files/space-mono-latin-700-normal.woff2?url';
 import '../styles/global.css';
 
 import Header from '../components/Header.astro';
@@ -32,11 +36,19 @@ const t = getTranslation(lang);
 // el `meta` de su página. El `?? home` es solo un respaldo de tipos.
 const docTitle = page === 'home' ? t.meta.title : t.pages[page].meta;
 
+// Descripción específica de cada página; la portada usa la del sitio.
+const description =
+  page === 'home' ? t.meta.description : t.pages[page].description;
+
 // URLs absolutas para canonical / Open Graph / hreflang, derivadas del mapa de
 // rutas para que coincidan con los enlaces alternos.
 const siteUrl = Astro.site ?? Astro.url;
 const canonical = new URL(routes[page][lang], siteUrl).toString();
-const ogImage = new URL('/og.svg', siteUrl).toString();
+const ogImage = new URL('/og.png', siteUrl).toString();
+const ogImageAlt =
+  lang === 'es'
+    ? 'Eduardo S. — Desarrollador backend y full stack'
+    : 'Eduardo S. — Backend & full stack developer';
 
 const ogLocale = lang === 'es' ? 'es_MX' : 'en_US';
 const ogLocaleAlt = lang === 'es' ? 'en_US' : 'es_MX';
@@ -44,6 +56,40 @@ const ogLocaleAlt = lang === 'es' ? 'en_US' : 'es_MX';
 // URLs de esta misma página por idioma, para que el detector de idioma del
 // cliente pueda redirigir al equivalente sin recargar de más.
 const altLinks = JSON.stringify(routes[page]);
+
+// Datos estructurados (JSON-LD): identidad del autor y del sitio, para que los
+// buscadores entiendan quién está detrás del portafolio y lo enlacen entre sí.
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Person',
+      '@id': `${siteUrl}#person`,
+      name: 'Eduardo Sebastián Sánchez Torres',
+      alternateName: 'Eduardo S.',
+      url: siteUrl.href,
+      jobTitle:
+        lang === 'es'
+          ? 'Desarrollador backend y full stack'
+          : 'Backend & full stack developer',
+      sameAs: [
+        'https://github.com/eduardostorres',
+        'https://www.linkedin.com/in/eduardostorres/',
+        'https://x.com/eduardostorres_',
+        'https://instagram.com/eduardostorres_',
+      ],
+    },
+    {
+      '@type': 'WebSite',
+      '@id': `${siteUrl}#website`,
+      name: t.meta.title,
+      url: siteUrl.href,
+      description: t.meta.description,
+      inLanguage: lang === 'es' ? 'es-MX' : 'en-US',
+      publisher: { '@id': `${siteUrl}#person` },
+    },
+  ],
+};
 ---
 
 <!doctype html>
@@ -52,6 +98,22 @@ const altLinks = JSON.stringify(routes[page]);
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link id="favicon" rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    {/* Precarga de fuentes: acelera el primer pintado del texto y reduce el FOUT. */}
+    <link
+      rel="preload"
+      href={spaceMono400}
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href={spaceMono700}
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
     <link rel="canonical" href={canonical} />
     <meta name="generator" content={Astro.generator} />
 
@@ -72,7 +134,7 @@ const altLinks = JSON.stringify(routes[page]);
     />
 
     <title>{docTitle}</title>
-    <meta name="description" content={t.meta.description} />
+    <meta name="description" content={description} />
     <meta name="author" content="Eduardo S." />
 
     <meta
@@ -90,16 +152,28 @@ const altLinks = JSON.stringify(routes[page]);
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonical} />
     <meta property="og:title" content={docTitle} />
-    <meta property="og:description" content={t.meta.description} />
+    <meta property="og:description" content={description} />
     <meta property="og:image" content={ogImage} />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={ogImageAlt} />
     <meta property="og:locale" content={ogLocale} />
     <meta property="og:locale:alternate" content={ogLocaleAlt} />
 
     {/* Twitter */}
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={docTitle} />
-    <meta name="twitter:description" content={t.meta.description} />
+    <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:image:alt" content={ogImageAlt} />
+
+    {/* Datos estructurados: Person + WebSite */}
+    <script
+      type="application/ld+json"
+      is:inline
+      set:html={JSON.stringify(structuredData)}
+    />
 
     {/*
       Fija el tema antes del primer pintado para evitar el "flash"
