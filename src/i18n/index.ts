@@ -24,11 +24,6 @@ export type Lang = keyof typeof languages;
 
 export const supportedLangs = Object.keys(languages) as Lang[];
 
-/** Type guard para validar un código de idioma desconocido. */
-export function isLang(value: string | null | undefined): value is Lang {
-  return value != null && value in languages;
-}
-
 /** Devuelve el diccionario de un idioma. */
 export function getTranslation(lang: Lang): Translation {
   return translations[lang];
@@ -61,8 +56,3 @@ export const routes = {
 export type RouteKey = keyof typeof routes;
 
 export const routeKeys = Object.keys(routes) as RouteKey[];
-
-/** Ruta de una página en un idioma dado (p. ej. `localizedPath('about','en')`). */
-export function localizedPath(key: RouteKey, lang: Lang): string {
-  return routes[key][lang];
-}

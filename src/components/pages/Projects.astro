@@ -1,6 +1,7 @@
 ---
 import { getTranslation, type Lang } from '../../i18n';
 import { projects, techLabel } from '../../data/projects';
+import { serializeForScript } from '../../utils/serialize';
 import ProjectFilter from '../ProjectFilter.astro';
 import ProjectCard from '../ProjectCard.astro';
 
@@ -112,11 +113,12 @@ const collectionLd = {
   </p>
 </section>
 
-{/* Datos estructurados: colección + lista de proyectos */}
+{/* Datos estructurados: colección + lista de proyectos. Serializado con escape
+    para `<script>` para que ningún título/descripción pueda romper el bloque. */}
 <script
   type="application/ld+json"
   is:inline
-  set:html={JSON.stringify(collectionLd)}
+  set:html={serializeForScript(collectionLd)}
 />
 
 <script>

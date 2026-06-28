@@ -9,6 +9,7 @@ import '../styles/global.css';
 
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import { serializeForScript } from '../utils/serialize';
 import {
   getTranslation,
   routes,
@@ -54,8 +55,9 @@ const ogLocale = lang === 'es' ? 'es_MX' : 'en_US';
 const ogLocaleAlt = lang === 'es' ? 'en_US' : 'es_MX';
 
 // URLs de esta misma página por idioma, para que el detector de idioma del
-// cliente pueda redirigir al equivalente sin recargar de más.
-const altLinks = JSON.stringify(routes[page]);
+// cliente pueda redirigir al equivalente sin recargar de más. Se serializa con
+// escape para `<script>` (defensa en profundidad ante `</script>` / inyección).
+const altLinks = serializeForScript(routes[page]);
 
 // Datos estructurados (JSON-LD): identidad del autor y del sitio, para que los
 // buscadores entiendan quién está detrás del portafolio y lo enlacen entre sí.
@@ -168,11 +170,12 @@ const structuredData = {
     <meta name="twitter:image" content={ogImage} />
     <meta name="twitter:image:alt" content={ogImageAlt} />
 
-    {/* Datos estructurados: Person + WebSite */}
+    {/* Datos estructurados: Person + WebSite. Se serializa con escape para
+        `<script>` para que ningún valor pueda romper el bloque (XSS). */}
     <script
       type="application/ld+json"
       is:inline
-      set:html={JSON.stringify(structuredData)}
+      set:html={serializeForScript(structuredData)}
     />
 
     {/*

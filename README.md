@@ -58,6 +58,33 @@ pnpm add -D <pkg>   # añadir dependencia de desarrollo
 - 🔎 **SEO**: title, description, canonical, Open Graph y Twitter Cards.
 - 📱 **Responsive** cuidado de móvil a pantallas ultraanchas.
 
+---
+
+## Privacidad y manejo de datos
+
+Este sitio está diseñado con minimización de datos por defecto. Resumen para
+cumplimiento (GDPR / CCPA y equivalentes):
+
+- **No se recopilan datos personales.** No hay formularios, backend, base de
+  datos, autenticación, analítica ni cookies de seguimiento. El contacto se hace
+  a través de enlaces a perfiles públicos, no mediante captura de datos.
+- **Almacenamiento local (estrictamente necesario).** Solo se guardan dos
+  preferencias de interfaz en `localStorage`: el tema (`theme`) y el idioma
+  (`lang`). No son datos personales ni identificadores, no se transmiten a
+  ningún servidor y no rastrean al usuario; por su carácter funcional no
+  requieren banner de consentimiento. El usuario puede borrarlas en cualquier
+  momento limpiando el almacenamiento del navegador.
+- **Sin terceros.** Las fuentes (`@fontsource/space-mono`) se autoalojan, por lo
+  que no hay peticiones a CDNs externas ni fuga de IPs hacia terceros.
+- **Datos publicados intencionalmente.** El nombre del autor y los enlaces a sus
+  redes públicas aparecen en el contenido y en los datos estructurados (JSON-LD)
+  y metaetiquetas Open Graph. Es información que el titular decide publicar como
+  parte de su portafolio; no proviene de terceros.
+- **Si en el futuro se añade un formulario** (p. ej. en `/contacto`), deberá
+  incorporarse: base legal y aviso de privacidad, minimización de campos,
+  transmisión por HTTPS, validación y sanitización en servidor, y políticas de
+  retención y eliminación de los datos recibidos.
+
 ## Estructura
 
 ```text
@@ -67,7 +94,7 @@ pnpm add -D <pkg>   # añadir dependencia de desarrollo
 ├── package.json
 ├── public/
 │   ├── favicon.svg        # monograma adaptable al tema
-│   └── og.svg             # imagen para redes sociales
+│   └── og.png             # imagen para redes sociales (Open Graph / Twitter)
 └── src/
     ├── components/
     │   ├── Header.astro
@@ -115,6 +142,6 @@ Los tokens de diseño (claro y oscuro) viven en
 
 ### Imagen Open Graph
 
-`public/og.svg` funciona en la mayoría de los validadores modernos. Para máxima
-compatibilidad con plataformas antiguas, reemplázala por un `og.png`
-(1200×630) y actualiza la referencia en `src/layouts/Layout.astro`.
+La imagen para redes sociales es `public/og.png` (1200×630), referenciada en
+[`src/layouts/Layout.astro`](./src/layouts/Layout.astro). Reemplázala por la tuya
+manteniendo ese tamaño para máxima compatibilidad con todas las plataformas.
