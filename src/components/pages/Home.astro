@@ -1,12 +1,18 @@
 ---
 import { getTranslation, type Lang } from '../../i18n';
 
+/**
+ * Portada (hero). Presenta un badge de estado, el nombre y un subtítulo.
+ * Todo el texto visible (salvo el nombre) viene del diccionario i18n según el
+ * idioma de la ruta; el nombre se mantiene fijo por ser identidad de marca.
+ */
 interface Props {
   lang: Lang;
 }
 
 const { lang } = Astro.props;
 const t = getTranslation(lang);
+// Nombre de marca: constante (no se traduce ni cambia entre idiomas).
 const name = 'EDUARDO S.';
 ---
 

@@ -9,6 +9,13 @@ import {
 import LanguageSwitcher from './LanguageSwitcher.astro';
 import ThemeToggle from './ThemeToggle.astro';
 
+/**
+ * Cabecera del sitio: logotipo, navegación principal (escritorio + panel móvil
+ * desplegable), selector de idioma y conmutador de tema. Los enlaces se derivan
+ * del mapa de rutas i18n, por lo que añadir/quitar una página actualiza ambos
+ * menús automáticamente. El comportamiento del menú móvil (abrir/cerrar, cierre
+ * con Escape) se gestiona en el `<script>` del final.
+ */
 interface Props {
   lang: Lang;
   /** Página actual: marca el enlace activo y orienta el selector de idioma. */
@@ -132,19 +139,25 @@ const links = routeKeys.map((key) => ({
 </header>
 
 <script>
+  // Control del menú de navegación móvil. El estado de apertura vive en el
+  // atributo `aria-expanded` del botón (única fuente de verdad), de modo que la
+  // accesibilidad y la lógica permanecen sincronizadas.
   const toggle = document.getElementById('nav-toggle');
   const panel = document.getElementById('mobile-nav');
 
+  /** Abre o cierra el panel: actualiza el estado ARIA y la visibilidad. */
   const setOpen = (open: boolean): void => {
     toggle?.setAttribute('aria-expanded', String(open));
     if (panel) panel.hidden = !open;
   };
 
+  // Clic en la hamburguesa: alterna según el estado actual.
   toggle?.addEventListener('click', () => {
     setOpen(toggle.getAttribute('aria-expanded') !== 'true');
   });
 
-  // Cierra con Escape y devuelve el foco al disparador.
+  // Escape cierra el panel y devuelve el foco al disparador (buena práctica de
+  // teclado: el usuario no pierde la posición tras cerrar).
   document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape' && toggle?.getAttribute('aria-expanded') === 'true') {
       setOpen(false);

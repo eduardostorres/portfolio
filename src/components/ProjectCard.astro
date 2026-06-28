@@ -2,6 +2,13 @@
 import { techLabel, type Project } from '../data/projects';
 import { getTranslation, type Lang } from '../i18n';
 
+/**
+ * Tarjeta de un proyecto: número de orden, año, título, descripción, etiquetas
+ * de tecnología y, si existen, enlaces a repositorio y demo. El `data-tech` que
+ * se emite en el artículo es lo que usa el filtro de la página para mostrar u
+ * ocultar la tarjeta. Los enlaces marcados con `#` (placeholder) se omiten para
+ * no abrir pestañas vacías.
+ */
 interface Props {
   project: Project;
   /** Posición en la lista: número visible y escalonado de la animación. */

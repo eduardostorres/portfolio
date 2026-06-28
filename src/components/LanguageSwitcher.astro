@@ -8,6 +8,13 @@ import {
   type RouteKey,
 } from '../i18n';
 
+/**
+ * Selector de idioma segmentado. Cada opción es un enlace real a la MISMA página
+ * en el otro idioma (bueno para SEO y para navegación sin JS). Al hacer clic se
+ * guarda la elección en `localStorage` para que el detector del Layout la
+ * respete en futuras visitas; esa preferencia explícita prevalece sobre el
+ * idioma del navegador.
+ */
 interface Props {
   /** Idioma activo de la página. */
   lang: Lang;

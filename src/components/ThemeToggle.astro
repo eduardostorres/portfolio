@@ -1,6 +1,12 @@
 ---
 import { getTranslation, type Lang } from '../i18n';
 
+/**
+ * Botón de cambio de tema (claro/oscuro). El SVG visible depende del tema activo
+ * vía clases `dark:`. La persistencia, el favicon dinámico y el seguimiento de
+ * la preferencia del sistema se resuelven en el `<script>` del cliente; el tema
+ * inicial ya lo fija el script anti-FOUC del Layout antes del primer pintado.
+ */
 interface Props {
   lang: Lang;
 }
@@ -74,6 +80,15 @@ const t = getTranslation(lang);
     return `data:image/svg+xml,${encodeURIComponent(svg)}`;
   };
 
+  /**
+   * Aplica un tema a la página: alterna la clase `dark`, ajusta `color-scheme`
+   * (controles nativos del navegador) y actualiza el favicon.
+   *
+   * @param theme   Tema a aplicar.
+   * @param persist Si `true` (por defecto) guarda la elección en `localStorage`.
+   *   Se pasa `false` cuando el cambio proviene del sistema operativo y NO de
+   *   una acción explícita del usuario, para no «fijar» una preferencia manual.
+   */
   const applyTheme = (theme: Theme, persist = true): void => {
     root.classList.toggle('dark', theme === 'dark');
     root.style.colorScheme = theme;

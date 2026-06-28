@@ -1,6 +1,12 @@
 ---
 import { getTranslation, type Lang } from '../i18n';
 
+/**
+ * Bloque de enlaces a redes, agrupados en «Trabajo» y «Personal». Cada enlace
+ * abre en una pestaña nueva con `rel="noopener noreferrer"` (evita que la página
+ * destino acceda a `window.opener` y previene fugas de referrer). Los iconos son
+ * SVG inline, sin dependencias de terceros.
+ */
 interface Props {
   lang: Lang;
 }
