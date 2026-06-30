@@ -6,7 +6,7 @@
  */
 export const es = {
   meta: {
-    title: 'Eduardo Sánchez — Ingeniero backend y full-stack',
+    title: 'Eduardo Sánchez | Portafolio',
     description:
       'Portafolio de Eduardo Sebastián Sánchez Torres, ingeniero backend y full-stack. Construyo software que permanece útil cuando la tecnología cambia: APIs, sistemas ERP e integraciones empresariales.',
   },

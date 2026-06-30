@@ -6,7 +6,7 @@ import type { Translation } from './index';
  */
 export const en = {
   meta: {
-    title: 'Eduardo Sánchez — Backend & full-stack engineer',
+    title: 'Eduardo Sánchez | Portfolio',
     description:
       'Portfolio of Eduardo Sebastián Sánchez Torres, a backend and full-stack engineer. I build software that stays useful as technology changes: APIs, ERP systems and enterprise integrations.',
   },
