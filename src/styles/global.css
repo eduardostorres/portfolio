@@ -4,37 +4,69 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 /* ------------------------------------------------------------------ *
- * Tokens de diseño
- * Semánticos y conmutables por tema. Se exponen a Tailwind con
- * `@theme inline` para usarlos como utilidades (bg-background, etc.).
+ * Design tokens
+ *
+ * Filosofía: minimalismo japonés (Ma, Kanso, Shibui, Wabi-Sabi). Una
+ * paleta cálida y silenciosa, un único acento (rojo japonés / 朱) y una
+ * tipografía protagonista. Los tokens son semánticos y conmutables por
+ * tema; se exponen a Tailwind con `@theme inline` para usarlos como
+ * utilidades (bg-bg, text-ink, border-line…).
  * ------------------------------------------------------------------ */
 :root {
-  --background: #ffffff;
-  --foreground: #0a0a0a;
-  --muted: #52525b;
-  --border: rgba(10, 10, 10, 0.08);
-  --accent: #eab308;
+  /* Superficies */
+  --bg: #fafaf8; /* Warm White */
+  --surface: #f3f3ef; /* gris cálido sutil, uso escaso */
+
+  /* Tinta (texto) */
+  --ink: #161616; /* Charcoal */
+  --muted: #56554e; /* gris cálido secundario — AA sobre --bg */
+  --faint: #8d8b81; /* gris cálido para etiquetas y detalles */
+
+  /* Líneas */
+  --line: rgba(22, 22, 22, 0.09);
+  --line-strong: rgba(22, 22, 22, 0.16);
+
+  /* Acento — rojo japonés (朱色, vermellón) */
+  --accent: #c8453b;
+  --accent-soft: rgba(200, 69, 59, 0.1);
+
   color-scheme: light;
 }
 
 .dark {
-  --background: #0a0a0a;
-  --foreground: #fafafa;
-  --muted: #a1a1aa;
-  --border: rgba(250, 250, 250, 0.1);
-  --accent: #f5c518;
+  --bg: #0d0d0d;
+  --surface: #161616;
+
+  --ink: #f5f5f5;
+  --muted: #b3b3b3;
+  --faint: #76746c;
+
+  --line: rgba(245, 245, 245, 0.1);
+  --line-strong: rgba(245, 245, 245, 0.18);
+
+  --accent: #e2594b;
+  --accent-soft: rgba(226, 89, 75, 0.14);
+
   color-scheme: dark;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-ink: var(--ink);
   --color-muted: var(--muted);
-  --color-border: var(--border);
+  --color-faint: var(--faint);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
   --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
 
-  --font-mono: 'Space Mono', ui-monospace, SFMono-Regular, 'SF Mono', Menlo,
-    Consolas, monospace;
+  --font-sans:
+    'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display',
+    'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+
+  /* Compás de aire entre secciones — el «Ma» del layout. */
+  --spacing-section: clamp(6rem, 14vh, 11rem);
 }
 
 /* ------------------------------------------------------------------ *
@@ -44,66 +76,121 @@
   html {
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
+    /* Desplazamiento suave al saltar a una sección; el header fijo no debe
+       tapar el inicio del bloque destino. */
+    scroll-behavior: smooth;
+    scroll-padding-top: 6rem;
   }
 
   body {
-    background-color: var(--background);
-    color: var(--foreground);
-    font-family: var(--font-mono);
+    background-color: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-feature-settings:
+      'liga' 1,
+      'calt' 1,
+      'cv05' 1,
+      'cv11' 1;
+    font-synthesis: none;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
   }
 
-  /* Transición suave de color al cambiar de tema. No anima en el primer
-     render (las transiciones requieren un valor previo), solo al alternar. */
+  /* Equilibra los titulares (evita líneas huérfanas) sin afectar a párrafos. */
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+
+  /* Transición de tema. Acotada a color/fondo/borde para no pelearse con las
+     animaciones de entrada ni con transforms. */
+  :root,
   body,
-  body * {
+  header,
+  footer,
+  section,
+  a,
+  button,
+  svg,
+  hr,
+  span,
+  p,
+  h1,
+  h2,
+  h3,
+  li {
     transition-property: color, background-color, border-color, fill, stroke;
-    transition-duration: 300ms;
+    transition-duration: 200ms;
     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   :focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: 3px;
-    border-radius: 4px;
+    border-radius: 3px;
   }
 
   ::selection {
     background-color: var(--accent);
-    color: #0a0a0a;
+    color: #fafaf8;
+  }
+
+  /* Tipografía de números tabulares donde se necesite alineación (relojes,
+     contadores, años). */
+  .tnum {
+    font-variant-numeric: tabular-nums;
   }
 }
 
 /* ------------------------------------------------------------------ *
- * Animaciones
- * Entrada sutil y escalonada en la carga + punto de estado pulsante.
- * Todo se neutraliza con `prefers-reduced-motion` (ver más abajo),
- * dejando los elementos en su estado final y visible.
+ * Reveal — entrada sutil dirigida por scroll
+ *
+ * Pulcra y discreta (Shibui): un desplazamiento mínimo y un fundido de
+ * 220 ms. El estado oculto SOLO se aplica cuando hay JS (clase `.js` en
+ * <html>, que añade el Layout antes de pintar); si JS falla o está
+ * desactivado, el contenido permanece visible. Un IntersectionObserver
+ * añade `.is-visible` al entrar en viewport; el `--reveal-delay` permite
+ * escalonar grupos.
  * ------------------------------------------------------------------ */
-@keyframes reveal {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-    filter: blur(4px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-    filter: blur(0);
-  }
+.js [data-reveal] {
+  opacity: 0;
+  transform: translateY(12px);
+  transition:
+    opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+  will-change: opacity, transform;
 }
 
-@keyframes reveal-fade {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+.js [data-reveal].is-visible {
+  opacity: 1;
+  transform: none;
 }
 
+/* Escalonado del revelado mediante atributo (no inline `style`, para no
+   requerir `'unsafe-inline'` en la CSP de estilos). */
+[data-reveal-delay='1'] {
+  --reveal-delay: 60ms;
+}
+[data-reveal-delay='2'] {
+  --reveal-delay: 120ms;
+}
+[data-reveal-delay='3'] {
+  --reveal-delay: 180ms;
+}
+[data-reveal-delay='4'] {
+  --reveal-delay: 240ms;
+}
+[data-reveal-delay='5'] {
+  --reveal-delay: 300ms;
+}
+[data-reveal-delay='6'] {
+  --reveal-delay: 360ms;
+}
+
+/* Punto de estado: latido sereno del acento. */
 @keyframes ping-soft {
   0% {
     transform: scale(1);
@@ -116,26 +203,29 @@
   }
 }
 
-.reveal {
-  animation: reveal 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-.reveal-fade {
-  animation: reveal-fade 1s ease both;
-}
-
 .ping-soft {
-  animation: ping-soft 2.6s cubic-bezier(0, 0, 0.2, 1) infinite;
+  animation: ping-soft 2.8s cubic-bezier(0, 0, 0.2, 1) infinite;
 }
 
-/* Respeta la preferencia de movimiento reducido. */
+/* ------------------------------------------------------------------ *
+ * Movimiento reducido — se respeta por completo.
+ * ------------------------------------------------------------------ */
 @media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .js [data-reveal] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
   *,
   *::before,
   *::after {
     transition-duration: 0.01ms !important;
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
-    scroll-behavior: auto !important;
   }
 }

@@ -6,71 +6,88 @@
  */
 export const es = {
   meta: {
-    title: 'Eduardo S. | Portafolio',
+    title: 'Eduardo Sánchez — Ingeniero backend y full-stack',
     description:
-      'Portafolio de Eduardo Sebastián Sánchez Torres, desarrollador backend y full stack. Proyectos, experiencia y notas sobre desarrollo de software, arquitectura y buenas prácticas.',
+      'Portafolio de Eduardo Sebastián Sánchez Torres, ingeniero backend y full-stack. Construyo software que permanece útil cuando la tecnología cambia: APIs, sistemas ERP e integraciones empresariales.',
   },
-  hero: {
-    subtitle: 'Mi Portafolio',
-    status: 'En construcción',
-  },
+
   nav: {
-    home: 'Inicio',
-    about: 'Acerca',
-    projects: 'Proyectos',
-    blog: 'Blog',
-    cv: 'CV',
+    about: 'Perfil',
+    work: 'Proyectos',
+    stack: 'Stack',
+    experience: 'Experiencia',
     contact: 'Contacto',
   },
+
+  hero: {
+    status: 'Disponible para nuevos proyectos',
+    role: 'Ingeniero backend y full-stack',
+    tagline:
+      'Construyo software que permanece útil mucho después de escribir la última línea de código.',
+    ctaPrimary: 'Ver proyectos',
+    ctaSecondary: 'Hablemos',
+  },
+
+  about: {
+    eyebrow: 'Perfil',
+    title: 'Ingeniería con criterio, no solo código.',
+    lead: 'Soy Eduardo, ingeniero en Redes y Software especializado en backend, con más de cuatro años diseñando aplicaciones, sistemas ERP, APIs REST y SOAP e integraciones donde la estabilidad y la confiabilidad son requisitos, no adornos.',
+    body: 'Aprendí pronto que escribir código es solo una parte del trabajo. Lo difícil empieza cuando ese código debe mantenerse durante años, crecer junto al producto y seguir siendo claro para quien lo lea después. Por eso dejé de preguntar solo «¿funciona?» y empecé a preguntar si es mantenible, si es escalable y si resuelve el problema correcto.',
+    cta: 'Leer el ensayo completo',
+  },
+
+  work: {
+    eyebrow: 'Proyectos',
+    title: 'Trabajo seleccionado.',
+    intro:
+      'Una muestra breve. Cada proyecto, pensado como un caso de estudio: el problema, la decisión técnica y el resultado.',
+    problem: 'Problema',
+    solution: 'Solución',
+    result: 'Resultado',
+    stack: 'Stack',
+    demo: 'Ver demo',
+    code: 'Código',
+    inProgress: 'En desarrollo',
+  },
+
+  stack: {
+    eyebrow: 'Stack',
+    title: 'Herramientas, no objetivos.',
+    intro:
+      'Las tecnologías cambian; los fundamentos permanecen. Estas son las que uso a diario para construir cosas que duran.',
+    groups: {
+      languages: 'Lenguajes',
+      backend: 'Backend',
+      frontend: 'Frontend',
+      infra: 'Datos & Infra',
+    },
+  },
+
+  experience: {
+    eyebrow: 'Experiencia',
+    title: 'Trayectoria.',
+    intro: 'Cuatro años construyendo software que se usa todos los días.',
+    present: 'Hoy',
+  },
+
+  contact: {
+    eyebrow: 'Contacto',
+    title: '¿Construimos algo que perdure?',
+    lead: 'Si tienes un proyecto en mente o quieres hablar de ingeniería, conectemos en LinkedIn.',
+    cta: 'Conectar en LinkedIn',
+  },
+
   pages: {
     about: {
-      title: 'Acerca',
-      meta: 'Eduardo S. | Acerca',
+      title: 'Sobre mí',
+      meta: 'Eduardo Sánchez — Sobre mí',
       intro: 'Un poco sobre mí, mi trayectoria y lo que me mueve.',
       description:
-        'Conoce a Eduardo Sebastián Sánchez Torres: su trayectoria como desarrollador backend y full stack, su forma de trabajar y lo que le mueve.',
-    },
-    projects: {
-      title: 'Proyectos',
-      meta: 'Eduardo S. | Proyectos',
-      intro: 'Una selección de proyectos en los que he trabajado.',
-      description:
-        'Proyectos de Eduardo S.: aplicaciones web, APIs, sistemas y automatizaciones. Filtra por tecnología: TypeScript, Node.js, React, Astro, Python y más.',
-    },
-    blog: {
-      title: 'Blog',
-      meta: 'Eduardo S. | Blog',
-      intro: 'Notas y artículos sobre desarrollo, diseño y tecnología.',
-      description:
-        'Artículos y notas de Eduardo S. sobre desarrollo de software, arquitectura, diseño y tecnología.',
-    },
-    cv: {
-      title: 'CV',
-      meta: 'Eduardo S. | CV',
-      intro: 'Mi experiencia, formación y habilidades en un vistazo.',
-      description:
-        'Currículum de Eduardo Sebastián Sánchez Torres: experiencia, formación y habilidades como desarrollador backend y full stack.',
-    },
-    contact: {
-      title: 'Contacto',
-      meta: 'Eduardo S. | Contacto',
-      intro: '¿Quieres hablar? Escríbeme y con gusto te respondo.',
-      description:
-        'Ponte en contacto con Eduardo S. para proyectos, colaboraciones o consultas sobre desarrollo de software.',
+        'Conoce a Eduardo Sebastián Sánchez Torres: su trayectoria como ingeniero backend y full-stack, su forma de trabajar y lo que le mueve.',
     },
   },
-  projectsFilter: {
-    label: 'Filtrar por tecnología',
-    all: 'Todas las tecnologías',
-  },
-  projectsList: {
-    code: 'Código',
-    demo: 'Demo',
-    empty: 'Aún no hay proyectos con esta tecnología.',
-    countSingular: 'proyecto',
-    countPlural: 'proyectos',
-  },
-  about: {
+
+  about_essay: {
     heading: 'Sobre mí',
     p1: `Hay una idea que ha permanecido conmigo desde que escribí mis primeras líneas de código: el software tiene la capacidad de convertir una idea en una herramienta que transforma la forma en que las personas trabajan, se comunican y resuelven problemas. Esa posibilidad fue lo que despertó mi interés por el desarrollo de software y, con el tiempo, terminó convirtiéndose en una profesión que disfruto ejercer cada día.`,
     p2: `¡Hola! Mi nombre es Eduardo Sebastián Sánchez Torres, soy ingeniero en Redes y Software, especializado en desarrollo full stack con enfoque en desarrollo backend con más de cuatro años de experiencia diseñando y construyendo aplicaciones web, sistemas ERP, APIs REST y SOAP, así como integraciones para procesos empresariales donde la estabilidad, la seguridad y la confiabilidad no son características deseables, sino requisitos indispensables.`,
@@ -92,21 +109,19 @@ export const es = {
     close3: 'Las herramientas se reemplazan.',
     close4: 'Pero una buena ingeniería siempre deja huella.',
   },
+
   footer: {
+    tagline: 'Diseñado y construido con intención.',
     rights: 'Todos los derechos reservados.',
+    backToTop: 'Volver arriba',
   },
-  common: {
-    soon: 'Próximamente',
-  },
+
   a11y: {
     home: 'Volver al inicio',
     theme: 'Cambiar tema',
     language: 'Cambiar idioma',
     nav: 'Navegación principal',
     menu: 'Abrir menú',
-  },
-  social: {
-    work: 'Trabajo',
-    personal: 'Personal',
+    close: 'Cerrar menú',
   },
 };

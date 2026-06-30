@@ -1,0 +1,165 @@
+---
+import { getTranslation, routes, type Lang } from '../../i18n';
+
+/**
+ * Hero: estado de disponibilidad, nombre a gran escala, rol, una frase potente,
+ * dos CTA y una línea discreta con la hora, fecha y zona horaria locales del
+ * visitante (resueltas en el cliente con `Intl.DateTimeFormat`, sin pedir
+ * permisos de geolocalización).
+ */
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = getTranslation(lang);
+const home = routes.home[lang];
+
+// Identidad de marca: constante (no se traduce).
+const name = 'Eduardo Sánchez Torres';
+---
+
+<section
+  id="top"
+  class="mx-auto flex min-h-[calc(100svh-4rem)] w-full max-w-6xl flex-col justify-center px-6 py-20 sm:px-8"
+>
+  <div class="max-w-4xl">
+    {/* Estado de disponibilidad */}
+    <p
+      data-reveal
+      class="inline-flex items-center gap-2.5 text-xs tracking-wide text-muted"
+    >
+      <span class="relative flex h-1.5 w-1.5" aria-hidden="true">
+        <span
+          class="ping-soft absolute inline-flex h-full w-full rounded-full bg-accent"
+        ></span>
+        <span class="relative inline-flex h-1.5 w-1.5 rounded-full bg-accent"
+        ></span>
+      </span>
+      {t.hero.status}
+    </p>
+
+    <h1
+      data-reveal
+      data-reveal-delay="1"
+      class="mt-7 text-balance text-[clamp(2.5rem,9vw,5.75rem)] font-semibold leading-[0.98] tracking-[-0.03em] text-ink"
+    >
+      {name}
+    </h1>
+
+    <p
+      data-reveal
+      data-reveal-delay="2"
+      class="mt-6 text-base font-medium tracking-tight text-muted sm:text-lg"
+    >
+      {t.hero.role}
+    </p>
+
+    <p
+      data-reveal
+      data-reveal-delay="3"
+      class="mt-8 max-w-2xl text-pretty text-xl leading-relaxed text-ink sm:text-2xl"
+    >
+      {t.hero.tagline}
+    </p>
+
+    {/* CTA */}
+    <div
+      data-reveal
+      data-reveal-delay="4"
+      class="mt-11 flex flex-wrap items-center gap-x-3 gap-y-4"
+    >
+      <a
+        href={`${home}#work`}
+        class="group inline-flex items-center gap-2 rounded-full bg-ink px-6 py-3 text-sm font-medium text-bg duration-200 hover:bg-accent focus-visible:bg-accent"
+      >
+        {t.hero.ctaPrimary}
+        <svg
+          class="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.7"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M5 12h14M13 6l6 6-6 6"></path>
+        </svg>
+      </a>
+      <a
+        href={`${home}#contact`}
+        class="inline-flex items-center rounded-full px-5 py-3 text-sm font-medium text-muted duration-200 hover:text-ink focus-visible:text-ink"
+      >
+        {t.hero.ctaSecondary}
+      </a>
+    </div>
+
+    {/* Línea de hora/fecha/zona local del visitante */}
+    <p
+      data-reveal
+      data-reveal-delay="5"
+      class="mt-16 flex items-center gap-2.5 text-xs text-faint"
+    >
+      <svg
+        class="h-3.5 w-3.5 text-accent"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.6"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <circle cx="12" cy="12" r="9"></circle>
+        <path d="M12 7v5l3 2"></path>
+      </svg>
+      <span
+        data-localtime
+        data-lang={lang}
+        class="tnum"
+        aria-live="off"
+      ></span>
+    </p>
+  </div>
+</section>
+
+<script>
+  // Hora, fecha y zona local del visitante. `Intl.DateTimeFormat` resuelve la
+  // zona del navegador (p. ej. America/Mexico_City) sin pedir geolocalización;
+  // de ahí derivamos la ciudad. Se refresca cada minuto.
+  const el = document.querySelector<HTMLElement>('[data-localtime]');
+  if (el) {
+    const lang = el.dataset.lang || 'es';
+
+    const render = (): void => {
+      const now = new Date();
+      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+      const city = (tz.split('/').pop() || tz).replace(/_/g, ' ');
+
+      const date = new Intl.DateTimeFormat(lang, {
+        weekday: 'long',
+        month: 'long',
+        day: 'numeric',
+      }).format(now);
+
+      const time = new Intl.DateTimeFormat(lang, {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false,
+      }).format(now);
+
+      // Capitaliza el día/mes (algunos locales los devuelven en minúscula).
+      const pretty = date.charAt(0).toUpperCase() + date.slice(1);
+      el.textContent = `${city} — ${pretty} · ${time}`;
+    };
+
+    render();
+    // Alinea el primer refresco al cambio de minuto y luego cada 60 s.
+    const toNextMinute = (60 - new Date().getSeconds()) * 1000;
+    setTimeout(() => {
+      render();
+      setInterval(render, 60_000);
+    }, toNextMinute);
+  }
+</script>

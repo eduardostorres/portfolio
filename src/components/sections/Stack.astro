@@ -1,0 +1,69 @@
+---
+import { getTranslation, type Lang } from '../../i18n';
+import { stack, stackGroupOrder } from '../../data/stack';
+import SectionHeading from '../SectionHeading.astro';
+
+/**
+ * Stack: grupos de tecnologías (lenguajes, backend, frontend, infra). El título
+ * de cada grupo sale del diccionario; los ítems, del registro `data/stack`.
+ * Iconografía mínima (un punto de acento) y alineación en rejilla.
+ */
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = getTranslation(lang);
+
+const groups = stackGroupOrder.map((key) => ({
+  key,
+  label: t.stack.groups[key],
+  items: stack[key],
+}));
+---
+
+<section id="stack" class="scroll-mt-24 border-t border-line">
+  <div class="mx-auto w-full max-w-6xl px-6 py-section sm:px-8">
+    <div class="grid gap-y-12 md:grid-cols-12 md:gap-x-12">
+      <div class="md:col-span-4 md:sticky md:top-28 md:self-start">
+        <SectionHeading
+          index={3}
+          eyebrow={t.stack.eyebrow}
+          title={t.stack.title}
+        />
+        <p
+          data-reveal
+          data-reveal-delay="1"
+          class="mt-6 max-w-xs text-pretty text-sm leading-relaxed text-muted"
+        >
+          {t.stack.intro}
+        </p>
+      </div>
+
+      <div class="md:col-span-8 md:pt-1">
+        <div class="grid gap-x-10 gap-y-10 sm:grid-cols-2">
+          {
+            groups.map((group, i) => (
+              <div data-reveal data-reveal-delay={String(i)}>
+                <h3 class="text-[0.7rem] font-medium uppercase tracking-[0.18em] text-faint">
+                  {group.label}
+                </h3>
+                <ul class="mt-4 space-y-2.5">
+                  {group.items.map((item) => (
+                    <li class="flex items-center gap-3 text-[0.95rem] text-ink">
+                      <span
+                        aria-hidden="true"
+                        class="h-1 w-1 shrink-0 rounded-full bg-accent/60"
+                      />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

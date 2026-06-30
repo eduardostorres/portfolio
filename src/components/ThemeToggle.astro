@@ -2,9 +2,9 @@
 import { getTranslation, type Lang } from '../i18n';
 
 /**
- * Botón de cambio de tema (claro/oscuro). El SVG visible depende del tema activo
- * vía clases `dark:`. La persistencia, el favicon dinámico y el seguimiento de
- * la preferencia del sistema se resuelven en el `<script>` del cliente; el tema
+ * Conmutador de tema (claro/oscuro). El SVG visible depende del tema activo vía
+ * clases `dark:`. La persistencia, el favicon dinámico y el seguimiento de la
+ * preferencia del sistema se resuelven en el `<script>` del cliente; el tema
  * inicial ya lo fija el script anti-FOUC del Layout antes del primer pintado.
  */
 interface Props {
@@ -20,15 +20,15 @@ const t = getTranslation(lang);
   id="theme-toggle"
   aria-label={t.a11y.theme}
   title={t.a11y.theme}
-  class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-border text-muted duration-200 hover:border-foreground/20 hover:bg-foreground/[0.04] hover:text-foreground focus-visible:text-foreground"
+  class="inline-flex h-9 w-9 items-center justify-center rounded-full text-muted duration-200 hover:bg-ink/[0.05] hover:text-ink focus-visible:text-ink"
 >
   {/* Sol: visible en modo oscuro (clic → claro) */}
   <svg
-    class="hidden h-[18px] w-[18px] dark:block"
+    class="hidden h-[17px] w-[17px] dark:block"
     viewBox="0 0 24 24"
     fill="none"
     stroke="currentColor"
-    stroke-width="1.75"
+    stroke-width="1.6"
     stroke-linecap="round"
     stroke-linejoin="round"
     aria-hidden="true"
@@ -41,11 +41,11 @@ const t = getTranslation(lang);
 
   {/* Luna: visible en modo claro (clic → oscuro) */}
   <svg
-    class="block h-[18px] w-[18px] dark:hidden"
+    class="block h-[17px] w-[17px] dark:hidden"
     viewBox="0 0 24 24"
     fill="none"
     stroke="currentColor"
-    stroke-width="1.75"
+    stroke-width="1.6"
     stroke-linecap="round"
     stroke-linejoin="round"
     aria-hidden="true"
@@ -63,31 +63,27 @@ const t = getTranslation(lang);
   const favicon = document.getElementById('favicon') as HTMLLinkElement | null;
 
   /**
-   * Genera el favicon (monograma «ES») con los colores del tema activo,
-   * como data URI. Así el favicon sigue al tema de la app —no solo al del
-   * sistema— en la carga inicial, al alternar y al cambiar el SO.
+   * Genera el favicon (monograma «ES») con los colores del tema activo, como
+   * data URI. Así el favicon sigue al tema de la app —no solo al del sistema—.
    */
   const faviconFor = (theme: Theme): string => {
-    // Noche: fondo negro, letra blanca. Día: fondo blanco, letra negra.
     const [bg, fg] =
-      theme === 'dark' ? ['#0a0a0a', '#fafafa'] : ['#fafafa', '#0a0a0a'];
+      theme === 'dark' ? ['#0d0d0d', '#f5f5f5'] : ['#fafaf8', '#161616'];
     const svg =
       '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">' +
       `<rect width="32" height="32" rx="8" fill="${bg}"/>` +
-      '<text x="16" y="16" text-anchor="middle" dominant-baseline="central" ' +
-      `font-family="monospace" font-size="14" font-weight="700" letter-spacing="-0.5" fill="${fg}">ES</text>` +
+      '<text x="16" y="17" text-anchor="middle" dominant-baseline="central" ' +
+      `font-family="-apple-system,Segoe UI,Roboto,sans-serif" font-size="15" font-weight="700" letter-spacing="-0.5" fill="${fg}">ES</text>` +
       '</svg>';
     return `data:image/svg+xml,${encodeURIComponent(svg)}`;
   };
 
   /**
-   * Aplica un tema a la página: alterna la clase `dark`, ajusta `color-scheme`
-   * (controles nativos del navegador) y actualiza el favicon.
+   * Aplica un tema: alterna la clase `dark`, ajusta `color-scheme` y el favicon.
    *
-   * @param theme   Tema a aplicar.
-   * @param persist Si `true` (por defecto) guarda la elección en `localStorage`.
-   *   Se pasa `false` cuando el cambio proviene del sistema operativo y NO de
-   *   una acción explícita del usuario, para no «fijar» una preferencia manual.
+   * @param persist Si `true` (por defecto) guarda la elección. Se pasa `false`
+   *   cuando el cambio proviene del sistema operativo y no de una acción del
+   *   usuario, para no «fijar» una preferencia manual.
    */
   const applyTheme = (theme: Theme, persist = true): void => {
     root.classList.toggle('dark', theme === 'dark');

@@ -1,0 +1,86 @@
+---
+import { getTranslation, type Lang } from '../../i18n';
+import { experience } from '../../data/experience';
+import SectionHeading from '../SectionHeading.astro';
+
+/**
+ * Experiencia: línea de tiempo editorial. Cada entrada alinea el periodo a la
+ * izquierda y el rol + descripción a la derecha, separadas por hairlines.
+ */
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = getTranslation(lang);
+
+const entries = experience.map((entry) => {
+  const end = entry.to ?? t.experience.present;
+  // Evita «2021 — 2021»: si el periodo es de un solo año, muéstralo una vez.
+  const period = entry.to === entry.from ? entry.from : `${entry.from} — ${end}`;
+  return {
+    period,
+    current: entry.to === null,
+    role: entry.role[lang],
+    org: entry.org?.[lang],
+    description: entry.description[lang],
+  };
+});
+---
+
+<section id="experience" class="scroll-mt-24 border-t border-line">
+  <div class="mx-auto w-full max-w-6xl px-6 py-section sm:px-8">
+    <div class="grid gap-y-12 md:grid-cols-12 md:gap-x-12">
+      <div class="md:col-span-4 md:sticky md:top-28 md:self-start">
+        <SectionHeading
+          index={4}
+          eyebrow={t.experience.eyebrow}
+          title={t.experience.title}
+        />
+        <p
+          data-reveal
+          data-reveal-delay="1"
+          class="mt-6 max-w-xs text-pretty text-sm leading-relaxed text-muted"
+        >
+          {t.experience.intro}
+        </p>
+      </div>
+
+      <ol class="md:col-span-8 md:pt-1">
+        {
+          entries.map((entry, i) => (
+            <li
+              data-reveal
+              data-reveal-delay={String(i)}
+              class="grid grid-cols-1 gap-x-8 gap-y-2 border-t border-line py-7 first:border-t-0 first:pt-1 sm:grid-cols-[7.5rem_1fr]"
+            >
+              <div class="flex items-center gap-2 pt-0.5">
+                {entry.current && (
+                  <span
+                    aria-hidden="true"
+                    class="h-1.5 w-1.5 shrink-0 rounded-full bg-accent"
+                  />
+                )}
+                <span class="tnum text-sm text-faint">{entry.period}</span>
+              </div>
+
+              <div>
+                <h3 class="text-base font-medium tracking-tight text-ink">
+                  {entry.role}
+                </h3>
+                {entry.org && (
+                  <p class="mt-0.5 text-xs uppercase tracking-[0.14em] text-faint">
+                    {entry.org}
+                  </p>
+                )}
+                <p class="mt-2 max-w-xl text-pretty text-sm leading-relaxed text-muted">
+                  {entry.description}
+                </p>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </div>
+</section>

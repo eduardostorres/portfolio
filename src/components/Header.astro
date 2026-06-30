@@ -1,66 +1,65 @@
 ---
-import {
-  getTranslation,
-  routes,
-  routeKeys,
-  type Lang,
-  type RouteKey,
-} from '../i18n';
+import { getTranslation, routes, type Lang, type RouteKey } from '../i18n';
 import LanguageSwitcher from './LanguageSwitcher.astro';
 import ThemeToggle from './ThemeToggle.astro';
 
 /**
- * Cabecera del sitio: logotipo, navegación principal (escritorio + panel móvil
- * desplegable), selector de idioma y conmutador de tema. Los enlaces se derivan
- * del mapa de rutas i18n, por lo que añadir/quitar una página actualiza ambos
- * menús automáticamente. El comportamiento del menú móvil (abrir/cerrar, cierre
- * con Escape) se gestiona en el `<script>` del final.
+ * Cabecera fija del sitio: monograma, navegación por anclas a las secciones de
+ * la portada, selector de idioma y conmutador de tema. Los enlaces apuntan a
+ * `home#sección`, por lo que funcionan desde cualquier página (incluido el
+ * ensayo): navegan a la portada y se desplazan a la sección. Un observador
+ * marca la sección activa (scroll-spy); el menú móvil vive en el `<script>`.
  */
 interface Props {
   lang: Lang;
-  /** Página actual: marca el enlace activo y orienta el selector de idioma. */
   page: RouteKey;
 }
 
-const { lang, page } = Astro.props;
+const { lang } = Astro.props;
 const t = getTranslation(lang);
 
-/**
- * Enlaces de navegación, derivados del mapa de rutas. El orden de `routeKeys`
- * define el orden visual en ambos menús (escritorio y móvil); el slug sale de
- * `routes[key][lang]` y la etiqueta del diccionario `nav`.
- */
-const links = routeKeys.map((key) => ({
+const home = routes.home[lang];
+
+// Anclas a las secciones de la portada. El orden define el orden visual.
+const sections = ['about', 'work', 'stack', 'experience', 'contact'] as const;
+const links = sections.map((key) => ({
   key,
-  href: routes[key][lang],
+  href: `${home}#${key}`,
   label: t.nav[key],
 }));
 ---
 
-<header class="w-full">
+<header
+  id="site-header"
+  class="sticky top-0 z-50 border-b border-transparent bg-bg/0 backdrop-blur-0 transition-[background-color,border-color,backdrop-filter] duration-300 data-[scrolled]:border-line data-[scrolled]:bg-bg/75 data-[scrolled]:backdrop-blur-xl"
+>
   <div
-    class="reveal-fade mx-auto flex w-full max-w-5xl items-center justify-between gap-4 px-6 py-6 sm:px-8 sm:py-7"
+    class="mx-auto flex h-16 w-full max-w-6xl items-center justify-between gap-4 px-6 sm:px-8"
   >
     <a
-      href={routes.home[lang]}
+      href={home}
       aria-label={t.a11y.home}
-      class="text-base font-bold tracking-tight text-foreground duration-200 hover:opacity-70 focus-visible:opacity-70"
+      class="group inline-flex items-baseline text-[0.95rem] font-semibold tracking-tight text-ink duration-200 hover:opacity-70 focus-visible:opacity-70"
     >
-      ES<span class="text-accent" aria-hidden="true">.</span>
+      Eduardo Sánchez<span class="text-accent" aria-hidden="true">.</span>
     </a>
 
     {/* Navegación de escritorio */}
-    <nav aria-label={t.a11y.nav} class="hidden lg:block">
-      <ul class="flex items-center gap-1">
+    <nav aria-label={t.a11y.nav} class="hidden md:block">
+      <ul class="flex items-center gap-7">
         {
           links.map((link) => (
             <li>
               <a
                 href={link.href}
-                aria-current={link.key === page ? 'page' : undefined}
-                class="rounded-full px-3 py-1.5 text-sm text-muted duration-200 hover:text-foreground focus-visible:text-foreground aria-[current=page]:font-bold aria-[current=page]:text-foreground"
+                data-nav={link.key}
+                class="group relative text-[0.8rem] text-muted duration-200 hover:text-ink focus-visible:text-ink aria-[current=true]:text-ink"
               >
                 {link.label}
+                <span
+                  aria-hidden="true"
+                  class="absolute -bottom-1.5 left-0 h-px w-full origin-left scale-x-0 bg-accent transition-transform duration-200 group-hover:scale-x-100 group-aria-[current=true]:scale-x-100"
+                />
               </a>
             </li>
           ))
@@ -68,8 +67,9 @@ const links = routeKeys.map((key) => ({
       </ul>
     </nav>
 
-    <div class="flex items-center gap-2 sm:gap-3">
-      <LanguageSwitcher lang={lang} page={page} />
+    <div class="flex items-center gap-3 sm:gap-4">
+      <LanguageSwitcher lang={lang} page={Astro.props.page} />
+      <span aria-hidden="true" class="hidden h-4 w-px bg-line sm:block"></span>
       <ThemeToggle lang={lang} />
 
       {/* Disparador del menú móvil */}
@@ -77,34 +77,28 @@ const links = routeKeys.map((key) => ({
         type="button"
         id="nav-toggle"
         aria-label={t.a11y.menu}
-        title={t.a11y.menu}
         aria-expanded="false"
         aria-controls="mobile-nav"
-        class="group inline-flex h-10 w-10 items-center justify-center rounded-full border border-border text-muted duration-200 hover:border-foreground/20 hover:bg-foreground/[0.04] hover:text-foreground focus-visible:text-foreground lg:hidden"
+        class="group -mr-1.5 inline-flex h-9 w-9 items-center justify-center rounded-full text-muted duration-200 hover:bg-ink/[0.05] hover:text-ink md:hidden"
       >
-        {/* Hamburguesa: visible cuando el menú está cerrado */}
         <svg
           class="h-[18px] w-[18px] group-aria-[expanded=true]:hidden"
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
-          stroke-width="1.75"
+          stroke-width="1.6"
           stroke-linecap="round"
-          stroke-linejoin="round"
           aria-hidden="true"
         >
-          <path d="M3 6h18M3 12h18M3 18h18"></path>
+          <path d="M3 7h18M3 17h18"></path>
         </svg>
-
-        {/* Cerrar (X): visible cuando el menú está abierto */}
         <svg
           class="hidden h-[18px] w-[18px] group-aria-[expanded=true]:block"
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
-          stroke-width="1.75"
+          stroke-width="1.6"
           stroke-linecap="round"
-          stroke-linejoin="round"
           aria-hidden="true"
         >
           <path d="M18 6 6 18M6 6l12 12"></path>
@@ -113,21 +107,21 @@ const links = routeKeys.map((key) => ({
     </div>
   </div>
 
-  {/* Navegación móvil: panel desplegable bajo la cabecera */}
+  {/* Navegación móvil */}
   <nav
     id="mobile-nav"
     aria-label={t.a11y.nav}
     hidden
-    class="border-t border-border lg:hidden"
+    class="border-t border-line bg-bg/95 backdrop-blur-xl md:hidden"
   >
-    <ul class="mx-auto flex w-full max-w-5xl flex-col px-4 py-2 sm:px-6">
+    <ul class="mx-auto flex w-full max-w-6xl flex-col px-4 py-3 sm:px-6">
       {
         links.map((link) => (
           <li>
             <a
               href={link.href}
-              aria-current={link.key === page ? 'page' : undefined}
-              class="block rounded-lg px-3 py-2.5 text-sm text-muted duration-200 hover:bg-foreground/[0.04] hover:text-foreground focus-visible:text-foreground aria-[current=page]:font-bold aria-[current=page]:text-foreground"
+              data-mobile-link
+              class="block rounded-lg px-3 py-3 text-base text-muted duration-200 hover:bg-ink/[0.04] hover:text-ink"
             >
               {link.label}
             </a>
@@ -139,29 +133,61 @@ const links = routeKeys.map((key) => ({
 </header>
 
 <script>
-  // Control del menú de navegación móvil. El estado de apertura vive en el
-  // atributo `aria-expanded` del botón (única fuente de verdad), de modo que la
-  // accesibilidad y la lógica permanecen sincronizadas.
+  // ── Estado de scroll: hairline + backdrop cuando la página no está arriba.
+  const header = document.getElementById('site-header');
+  const setScrolled = (): void => {
+    if (header) header.toggleAttribute('data-scrolled', window.scrollY > 8);
+  };
+  setScrolled();
+  window.addEventListener('scroll', setScrolled, { passive: true });
+
+  // ── Menú móvil. El estado vive en `aria-expanded` (única fuente de verdad).
   const toggle = document.getElementById('nav-toggle');
   const panel = document.getElementById('mobile-nav');
 
-  /** Abre o cierra el panel: actualiza el estado ARIA y la visibilidad. */
   const setOpen = (open: boolean): void => {
     toggle?.setAttribute('aria-expanded', String(open));
     if (panel) panel.hidden = !open;
   };
 
-  // Clic en la hamburguesa: alterna según el estado actual.
   toggle?.addEventListener('click', () => {
     setOpen(toggle.getAttribute('aria-expanded') !== 'true');
   });
 
-  // Escape cierra el panel y devuelve el foco al disparador (buena práctica de
-  // teclado: el usuario no pierde la posición tras cerrar).
+  // Cierra al elegir un enlace o con Escape.
+  panel
+    ?.querySelectorAll('[data-mobile-link]')
+    .forEach((link) => link.addEventListener('click', () => setOpen(false)));
+
   document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape' && toggle?.getAttribute('aria-expanded') === 'true') {
       setOpen(false);
       toggle.focus();
     }
   });
+
+  // ── Scroll-spy: marca el enlace de la sección visible (solo en la portada,
+  // donde existen las secciones con esos `id`).
+  const navLinks = Array.from(
+    document.querySelectorAll<HTMLAnchorElement>('[data-nav]'),
+  );
+  const sections = navLinks
+    .map((link) => document.getElementById(link.dataset.nav ?? ''))
+    .filter((el): el is HTMLElement => el !== null);
+
+  if (sections.length) {
+    const spy = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          const id = entry.target.id;
+          navLinks.forEach((link) =>
+            link.setAttribute('aria-current', String(link.dataset.nav === id)),
+          );
+        });
+      },
+      { rootMargin: '-45% 0px -50% 0px' },
+    );
+    sections.forEach((section) => spy.observe(section));
+  }
 </script>

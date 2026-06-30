@@ -6,71 +6,88 @@ import type { Translation } from './index';
  */
 export const en = {
   meta: {
-    title: 'Eduardo S. | Portfolio',
+    title: 'Eduardo Sánchez — Backend & full-stack engineer',
     description:
-      'Portfolio of Eduardo Sebastián Sánchez Torres, a backend and full stack developer. Projects, experience and notes on software development, architecture and best practices.',
+      'Portfolio of Eduardo Sebastián Sánchez Torres, a backend and full-stack engineer. I build software that stays useful as technology changes: APIs, ERP systems and enterprise integrations.',
   },
-  hero: {
-    subtitle: 'My Portfolio',
-    status: 'Under construction',
-  },
+
   nav: {
-    home: 'Home',
-    about: 'About',
-    projects: 'Projects',
-    blog: 'Blog',
-    cv: 'CV',
+    about: 'Profile',
+    work: 'Work',
+    stack: 'Stack',
+    experience: 'Experience',
     contact: 'Contact',
   },
+
+  hero: {
+    status: 'Available for new projects',
+    role: 'Backend & full-stack engineer',
+    tagline:
+      'I build software that stays useful long after the last line of code is written.',
+    ctaPrimary: 'View work',
+    ctaSecondary: 'Get in touch',
+  },
+
+  about: {
+    eyebrow: 'Profile',
+    title: 'Engineering with judgment, not just code.',
+    lead: "I'm Eduardo, a Network and Software Engineer focused on the backend, with more than four years designing applications, ERP systems, REST and SOAP APIs and integrations where stability and reliability are requirements, not nice-to-haves.",
+    body: 'I learned early that writing code is only part of the job. The hard part begins when that code has to be maintained for years, grow with the product and stay clear for whoever reads it next. So I stopped asking only "does it work?" and started asking whether it is maintainable, whether it scales and whether it solves the right problem.',
+    cta: 'Read the full essay',
+  },
+
+  work: {
+    eyebrow: 'Work',
+    title: 'Selected work.',
+    intro:
+      'A short selection. Each project framed as a case study: the problem, the technical decision and the outcome.',
+    problem: 'Problem',
+    solution: 'Solution',
+    result: 'Outcome',
+    stack: 'Stack',
+    demo: 'View demo',
+    code: 'Code',
+    inProgress: 'In progress',
+  },
+
+  stack: {
+    eyebrow: 'Stack',
+    title: 'Tools, not goals.',
+    intro:
+      'Technologies change; fundamentals stay. These are the ones I reach for every day to build things that last.',
+    groups: {
+      languages: 'Languages',
+      backend: 'Backend',
+      frontend: 'Frontend',
+      infra: 'Data & Infra',
+    },
+  },
+
+  experience: {
+    eyebrow: 'Experience',
+    title: 'Path so far.',
+    intro: 'Four years building software that gets used every day.',
+    present: 'Present',
+  },
+
+  contact: {
+    eyebrow: 'Contact',
+    title: 'Shall we build something that lasts?',
+    lead: "If you have a project in mind or just want to talk engineering, let's connect on LinkedIn.",
+    cta: 'Connect on LinkedIn',
+  },
+
   pages: {
     about: {
-      title: 'About',
-      meta: 'Eduardo S. | About',
+      title: 'About me',
+      meta: 'Eduardo Sánchez — About',
       intro: 'A bit about me, my background and what drives me.',
       description:
-        'Meet Eduardo Sebastián Sánchez Torres: his path as a backend and full stack developer, how he works and what drives him.',
-    },
-    projects: {
-      title: 'Projects',
-      meta: 'Eduardo S. | Projects',
-      intro: 'A selection of projects I have worked on.',
-      description:
-        'Projects by Eduardo S.: web apps, APIs, systems and automations. Filter by technology: TypeScript, Node.js, React, Astro, Python and more.',
-    },
-    blog: {
-      title: 'Blog',
-      meta: 'Eduardo S. | Blog',
-      intro: 'Notes and articles about development, design and tech.',
-      description:
-        'Articles and notes by Eduardo S. on software development, architecture, design and technology.',
-    },
-    cv: {
-      title: 'CV',
-      meta: 'Eduardo S. | CV',
-      intro: 'My experience, education and skills at a glance.',
-      description:
-        "Eduardo Sebastián Sánchez Torres's résumé: experience, education and skills as a backend and full stack developer.",
-    },
-    contact: {
-      title: 'Contact',
-      meta: 'Eduardo S. | Contact',
-      intro: 'Want to talk? Drop me a line and I will gladly reply.',
-      description:
-        'Get in touch with Eduardo S. for projects, collaborations or software development inquiries.',
+        'Meet Eduardo Sebastián Sánchez Torres: his path as a backend and full-stack engineer, how he works and what drives him.',
     },
   },
-  projectsFilter: {
-    label: 'Filter by technology',
-    all: 'All technologies',
-  },
-  projectsList: {
-    code: 'Code',
-    demo: 'Demo',
-    empty: 'No projects with this technology yet.',
-    countSingular: 'project',
-    countPlural: 'projects',
-  },
-  about: {
+
+  about_essay: {
     heading: 'About me',
     p1: `There is an idea that has stayed with me since I wrote my first lines of code: software can turn an idea into a tool that transforms the way people work, communicate and solve problems. That possibility is what sparked my interest in software development and, over time, grew into a profession I enjoy practicing every day.`,
     p2: `Hi! My name is Eduardo Sebastián Sánchez Torres. I am a Network and Software Engineer specializing in full-stack development with a strong focus on backend technologies, with more than four years of professional experience, I have designed and built web applications, ERP systems, REST and SOAP APIs, and enterprise integrations. Throughout my career, I have focused on delivering solutions where stability, security, and reliability are not optional but fundamental requirements.`,
@@ -92,21 +109,19 @@ export const en = {
     close3: 'Tools get replaced.',
     close4: 'But good engineering always leaves a mark.',
   },
+
   footer: {
+    tagline: 'Designed and built with intent.',
     rights: 'All rights reserved.',
+    backToTop: 'Back to top',
   },
-  common: {
-    soon: 'Coming soon',
-  },
+
   a11y: {
     home: 'Back to home',
     theme: 'Toggle theme',
     language: 'Change language',
     nav: 'Main navigation',
     menu: 'Open menu',
-  },
-  social: {
-    work: 'Work',
-    personal: 'Personal',
+    close: 'Close menu',
   },
 } satisfies Translation;

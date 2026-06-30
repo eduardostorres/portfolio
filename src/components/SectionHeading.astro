@@ -1,0 +1,34 @@
+---
+/**
+ * Encabezado de sección editorial: un «eyebrow» numerado (acento + índice) y el
+ * título. Unifica el ritmo tipográfico de todas las secciones de la portada.
+ */
+interface Props {
+  /** Índice editorial (se muestra como 01, 02…). */
+  index: number;
+  /** Etiqueta superior (kicker). */
+  eyebrow: string;
+  /** Título de la sección. */
+  title: string;
+  /** Clases extra para el contenedor (opcional). */
+  class?: string;
+}
+
+const { index, eyebrow, title, class: className = '' } = Astro.props;
+const num = String(index).padStart(2, '0');
+---
+
+<div data-reveal class={className}>
+  <p
+    class="flex items-center gap-3 text-[0.7rem] font-medium uppercase tracking-[0.22em] text-faint"
+  >
+    <span class="tnum text-accent">{num}</span>
+    <span aria-hidden="true" class="h-px w-7 bg-line-strong"></span>
+    {eyebrow}
+  </p>
+  <h2
+    class="mt-5 text-[clamp(1.75rem,4vw,2.6rem)] font-semibold leading-[1.12] tracking-tight text-ink"
+  >
+    {title}
+  </h2>
+</div>

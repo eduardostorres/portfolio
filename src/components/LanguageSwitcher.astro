@@ -9,16 +9,14 @@ import {
 } from '../i18n';
 
 /**
- * Selector de idioma segmentado. Cada opción es un enlace real a la MISMA página
- * en el otro idioma (bueno para SEO y para navegación sin JS). Al hacer clic se
- * guarda la elección en `localStorage` para que el detector del Layout la
- * respete en futuras visitas; esa preferencia explícita prevalece sobre el
+ * Selector de idioma minimalista (ES · EN). Cada opción es un enlace real a la
+ * MISMA página en el otro idioma (bueno para SEO y para navegación sin JS). Al
+ * hacer clic se guarda la elección en `localStorage` para que el detector del
+ * Layout la respete después; esa preferencia explícita prevalece sobre el
  * idioma del navegador.
  */
 interface Props {
-  /** Idioma activo de la página. */
   lang: Lang;
-  /** Página actual: se usa para enlazar a su equivalente en cada idioma. */
   page: RouteKey;
 }
 
@@ -26,24 +24,30 @@ const { lang, page } = Astro.props;
 const t = getTranslation(lang);
 ---
 
-{/* Selector segmentado: cada opción enlaza a esta misma página en su idioma. */}
 <div
   role="group"
   aria-label={t.a11y.language}
-  class="inline-flex items-center rounded-full border border-border p-0.5"
+  class="inline-flex items-center gap-1.5 text-xs tracking-wide"
 >
   {
-    supportedLangs.map((l) => (
-      <a
-        href={routes[page][l]}
-        hreflang={l}
-        title={languages[l]}
-        data-lang-switch={l}
-        aria-current={l === lang ? 'true' : 'false'}
-        class="rounded-full px-2.5 py-1 text-xs font-bold uppercase tracking-wider text-muted duration-200 hover:text-foreground focus-visible:text-foreground aria-[current=true]:bg-foreground aria-[current=true]:text-background"
-      >
-        {l}
-      </a>
+    supportedLangs.map((l, i) => (
+      <>
+        {i > 0 && (
+          <span aria-hidden="true" class="text-faint">
+            /
+          </span>
+        )}
+        <a
+          href={routes[page][l]}
+          hreflang={l}
+          title={languages[l]}
+          data-lang-switch={l}
+          aria-current={l === lang ? 'true' : 'false'}
+          class="uppercase text-muted duration-200 hover:text-ink focus-visible:text-ink aria-[current=true]:font-semibold aria-[current=true]:text-ink"
+        >
+          {l}
+        </a>
+      </>
     ))
   }
 </div>
@@ -51,12 +55,12 @@ const t = getTranslation(lang);
 <script>
   // Guarda la elección explícita de idioma antes de navegar: esta preferencia
   // tiene prioridad sobre el idioma del navegador en el detector del Layout.
-  document.querySelectorAll<HTMLAnchorElement>('[data-lang-switch]').forEach(
-    (el) => {
+  document
+    .querySelectorAll<HTMLAnchorElement>('[data-lang-switch]')
+    .forEach((el) => {
       el.addEventListener('click', () => {
         const lang = el.dataset.langSwitch;
         if (lang) localStorage.setItem('lang', lang);
       });
-    },
-  );
+    });
 </script>

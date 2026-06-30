@@ -1,0 +1,16 @@
+# Cabeceras de seguridad para hosts estáticos que leen `_headers`
+# (Netlify, Cloudflare Pages). Para Vercel, ver `vercel.json` en la raíz.
+# La CSP se entrega vía <meta> generada por Astro (hashes por build); aquí van
+# las cabeceras que NO pueden viajar en <meta>.
+/*
+  Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: geolocation=(), camera=(), microphone=(), payment=(), usb=(), accelerometer=(), gyroscope=(), magnetometer=(), interest-cohort=(), browsing-topics=()
+  Cross-Origin-Opener-Policy: same-origin
+  X-DNS-Prefetch-Control: off
+
+# Cacheo agresivo de los assets con hash de Astro (inmutables).
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable

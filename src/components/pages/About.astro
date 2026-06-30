@@ -1,9 +1,11 @@
 ---
-import { getTranslation, type Lang } from '../../i18n';
+import { getTranslation, routes, type Lang } from '../../i18n';
+import { serializeForScript } from '../../utils/serialize';
 
 /**
- * Contenido de «Acerca»: ensayo bilingüe. El texto vive en i18n (es/en) y se
- * renderiza en el idioma de la ruta.
+ * «Sobre mí»: ensayo bilingüe en formato editorial. El texto vive en i18n
+ * (`about_essay`, es/en) y se renderiza en el idioma de la ruta. La primera
+ * entrada es la entradilla; las cuatro últimas líneas forman la coda.
  */
 interface Props {
   lang: Lang;
@@ -11,34 +13,93 @@ interface Props {
 
 const { lang } = Astro.props;
 const t = getTranslation(lang);
+const home = routes.home[lang];
 
+// Migas de pan (JSON-LD): Inicio › Sobre mí. Aportan jerarquía a los
+// buscadores y enriquecen el resultado de búsqueda de esta página interna.
+const siteUrl = Astro.site ?? Astro.url;
+const homeLabel = lang === 'es' ? 'Inicio' : 'Home';
+const breadcrumbLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: homeLabel,
+      item: new URL(routes.home[lang], siteUrl).toString(),
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: t.pages.about.title,
+      item: new URL(routes.about[lang], siteUrl).toString(),
+    },
+  ],
+};
+
+const lead = 'p1' as const;
 const body = [
-  'p1', 'p2', 'p3', 'p4', 'p5', 'p6', 'p7', 'p8',
+  'p2', 'p3', 'p4', 'p5', 'p6', 'p7', 'p8',
   'p9', 'p10', 'p11', 'p12', 'p13', 'p14', 'p15',
 ] as const;
-const closing = ['close1', 'close2', 'close3'] as const;
+const closing = ['close1', 'close2', 'close3', 'close4'] as const;
 ---
 
-<article class="reveal-fade mx-auto w-full max-w-3xl">
-  <h1 class="font-bold text-3xl">{t.about.heading}</h1>
+<article class="mx-auto w-full max-w-2xl px-6 py-24 sm:px-8 sm:py-32">
+  <a
+    href={home}
+    class="group inline-flex items-center gap-2 text-sm text-muted duration-200 hover:text-ink focus-visible:text-ink"
+  >
+    <svg
+      class="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-0.5"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.7"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M19 12H5M11 18l-6-6 6-6"></path>
+    </svg>
+    {lang === 'es' ? 'Inicio' : 'Home'}
+  </a>
 
-  {/* ── Ensayo ───────────────────────────────────────────────────── */}
-  <div>
+  <h1
+    class="mt-10 text-[clamp(2rem,5vw,3rem)] font-semibold leading-[1.08] tracking-tight text-ink"
+  >
+    {t.about_essay.heading}
+  </h1>
+
+  <p class="mt-10 text-pretty text-xl leading-relaxed text-ink sm:text-2xl">
+    {t.about_essay[lead]}
+  </p>
+
+  <div class="mt-8 space-y-6">
     {
       body.map((key) => (
-        <p class="mt-8 text-xs text-pretty">{t.about[key]}</p>
+        <p class="text-pretty text-[1.0625rem] leading-[1.8] text-muted">
+          {t.about_essay[key]}
+        </p>
       ))
     }
   </div>
 
-  {/* ── Cierre ───────────────────────────────────────────────────── */}
-  <div>
+  <div class="mt-16 border-t border-line pt-12">
     {
       closing.map((key) => (
-        <p class="mt-8 text-xs text-pretty">{t.about[key]}</p>
+        <p class="text-pretty text-xl font-medium leading-relaxed tracking-tight text-ink sm:text-2xl">
+          {t.about_essay[key]}
+        </p>
       ))
     }
   </div>
-
-  <p class="mt-8 text-xs text-pretty">{t.about.close4}</p>
 </article>
+
+{/* Migas de pan para buscadores. Serializado con escape para `<script>`. */}
+<script
+  type="application/ld+json"
+  is:inline
+  set:html={serializeForScript(breadcrumbLd)}
+/>

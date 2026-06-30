@@ -46,10 +46,6 @@ export function getTranslation(lang: Lang): Translation {
 export const routes = {
   home: { es: '/', en: '/en' },
   about: { es: '/acerca', en: '/en/about' },
-  projects: { es: '/proyectos', en: '/en/projects' },
-  blog: { es: '/blog', en: '/en/blog' },
-  cv: { es: '/cv', en: '/en/cv' },
-  contact: { es: '/contacto', en: '/en/contact' },
 } as const satisfies Record<string, Record<Lang, string>>;
 
 /** Identificador estable de cada página con ruta propia. */

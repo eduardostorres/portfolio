@@ -1,47 +1,28 @@
 ---
-import { getTranslation, type Lang } from '../../i18n';
+import type { Lang } from '../../i18n';
+import Hero from '../sections/Hero.astro';
+import About from '../sections/About.astro';
+import Work from '../sections/Work.astro';
+import Stack from '../sections/Stack.astro';
+import Experience from '../sections/Experience.astro';
+import Contact from '../sections/Contact.astro';
 
 /**
- * Portada (hero). Presenta un badge de estado, el nombre y un subtítulo.
- * Todo el texto visible (salvo el nombre) viene del diccionario i18n según el
- * idioma de la ruta; el nombre se mantiene fijo por ser identidad de marca.
+ * Portada: experiencia editorial de una sola página. Orquesta, en orden, las
+ * secciones Hero → Perfil → Proyectos → Stack → Experiencia → Contacto. Cada
+ * sección es autónoma (datos, copy i18n y maquetación propios), por lo que
+ * reordenarlas o retirarlas se reduce a tocar este archivo.
  */
 interface Props {
   lang: Lang;
 }
 
 const { lang } = Astro.props;
-const t = getTranslation(lang);
-// Nombre de marca: constante (no se traduce ni cambia entre idiomas).
-const name = 'EDUARDO S.';
 ---
 
-<section class="flex w-full max-w-2xl flex-col items-center text-center">
-  {/* Badge de estado */}
-  <span
-    class="reveal inline-flex items-center gap-2.5 rounded-full border border-border px-3.5 py-1.5 text-xs tracking-wide text-muted"
-    style="animation-delay: 0ms"
-  >
-    <span class="relative flex h-1.5 w-1.5" aria-hidden="true">
-      <span
-        class="ping-soft absolute inline-flex h-full w-full rounded-full bg-accent"
-      ></span>
-      <span class="relative inline-flex h-1.5 w-1.5 rounded-full bg-accent"></span>
-    </span>
-    <span>{t.hero.status}</span>
-  </span>
-
-  <h1
-    class="reveal mt-8 text-balance text-[clamp(2rem,6vw,3.5rem)] font-bold leading-[1.08] tracking-tight text-foreground"
-    style="animation-delay: 90ms"
-  >
-    {name}
-  </h1>
-
-  <p
-    class="reveal mt-5 text-base text-muted sm:text-lg"
-    style="animation-delay: 180ms"
-  >
-    {t.hero.subtitle}
-  </p>
-</section>
+<Hero lang={lang} />
+<About lang={lang} />
+<Work lang={lang} />
+<Stack lang={lang} />
+<Experience lang={lang} />
+<Contact lang={lang} />

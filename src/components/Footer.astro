@@ -1,10 +1,11 @@
 ---
-import { getTranslation, type Lang } from '../i18n';
+import { getTranslation, routes, type Lang } from '../i18n';
+import { profiles } from '../data/profiles';
 
 /**
- * Pie de página: aviso de copyright con el año actual y la nota de derechos
- * (traducida). El año se calcula en tiempo de build, por lo que se mantiene al
- * día con cada despliegue sin necesidad de tocar el código.
+ * Pie de página editorial: nota de autoría, copyright con el año actual
+ * (resuelto en build), enlaces profesionales (GitHub, LinkedIn) y un enlace
+ * discreto para volver arriba. Sin datos personales (Privacy by Design).
  */
 interface Props {
   lang: Lang;
@@ -12,17 +13,69 @@ interface Props {
 
 const { lang } = Astro.props;
 const t = getTranslation(lang);
-// Año actual, resuelto en el build (sitio estático): evita un año «congelado».
 const year = new Date().getFullYear();
-const name = 'Eduardo S.';
+const name = 'Eduardo Sánchez Torres';
+const home = routes.home[lang];
+
+const links = [profiles.github, profiles.linkedin];
 ---
 
-<footer class="w-full">
-  <div class="mx-auto w-full max-w-5xl px-6 py-8 sm:px-8">
-    <p class="reveal-fade text-center text-xs leading-relaxed text-muted">
-      <span>&copy; {year} {name}</span>
-      <span aria-hidden="true" class="mx-1.5">&middot;</span>
-      <span>{t.footer.rights}</span>
-    </p>
+<footer class="border-t border-line">
+  <div
+    class="mx-auto flex w-full max-w-6xl flex-col gap-8 px-6 py-12 sm:flex-row sm:items-end sm:justify-between sm:px-8"
+  >
+    <div class="space-y-1.5">
+      <p class="text-sm text-ink">{t.footer.tagline}</p>
+      <p class="text-xs text-faint">
+        &copy; <span class="tnum">{year}</span> {name}. {t.footer.rights}
+      </p>
+    </div>
+
+    <div class="flex items-center gap-6">
+      <ul class="-ml-2.5 flex items-center gap-1">
+        {
+          links.map((profile) => (
+            <li>
+              <a
+                href={profile.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={profile.name}
+                title={profile.name}
+                class="inline-flex h-9 w-9 items-center justify-center rounded-full text-muted duration-200 hover:bg-ink/[0.05] hover:text-ink focus-visible:text-ink"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  aria-hidden="true"
+                  class="h-[17px] w-[17px]"
+                >
+                  <path d={profile.path} />
+                </svg>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+
+      <a
+        href={`${home}#top`}
+        class="group inline-flex items-center gap-2 text-xs text-muted duration-200 hover:text-ink focus-visible:text-ink"
+      >
+        {t.footer.backToTop}
+        <svg
+          class="h-3.5 w-3.5 transition-transform duration-200 group-hover:-translate-y-0.5"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.6"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M12 19V5M5 12l7-7 7 7"></path>
+        </svg>
+      </a>
+    </div>
   </div>
 </footer>

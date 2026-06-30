@@ -1,0 +1,74 @@
+---
+import { getTranslation, type Lang } from '../../i18n';
+import { projects, techLabel } from '../../data/projects';
+import { serializeForScript } from '../../utils/serialize';
+import SectionHeading from '../SectionHeading.astro';
+import CaseStudy from '../CaseStudy.astro';
+
+/**
+ * Proyectos: la sección principal. Encabezado editorial y una serie de casos de
+ * estudio (problema/solución/resultado), ordenados del más reciente al más
+ * antiguo. Incluye datos estructurados (ItemList) para los buscadores.
+ */
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = getTranslation(lang);
+
+const sorted = [...projects].sort((a, b) => b.year - a.year);
+
+const isReal = (url?: string): url is string => Boolean(url) && url !== '#';
+
+const itemListLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: t.work.title,
+  numberOfItems: sorted.length,
+  itemListElement: sorted.map((project, index) => ({
+    '@type': 'ListItem',
+    position: index + 1,
+    item: {
+      '@type': 'CreativeWork',
+      name: project.title[lang],
+      description: project.description[lang],
+      keywords: project.tech.map((value) => techLabel(value)).join(', '),
+      ...(isReal(project.demo)
+        ? { url: project.demo }
+        : isReal(project.repo)
+          ? { url: project.repo }
+          : {}),
+    },
+  })),
+};
+---
+
+<section id="work" class="scroll-mt-24 border-t border-line">
+  <div class="mx-auto w-full max-w-6xl px-6 py-section sm:px-8">
+    <div class="max-w-2xl">
+      <SectionHeading index={2} eyebrow={t.work.eyebrow} title={t.work.title} />
+      <p
+        data-reveal
+        data-reveal-delay="1"
+        class="mt-6 text-pretty text-base leading-relaxed text-muted"
+      >
+        {t.work.intro}
+      </p>
+    </div>
+
+    <div class="mt-16 space-y-20 sm:mt-20 sm:space-y-28">
+      {
+        sorted.map((project, index) => (
+          <CaseStudy project={project} index={index} lang={lang} />
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<script
+  type="application/ld+json"
+  is:inline
+  set:html={serializeForScript(itemListLd)}
+/>

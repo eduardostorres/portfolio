@@ -23,4 +23,24 @@ export default defineConfig({
   vite: {
     plugins: [tailwindcss()],
   },
+
+  // Content Security Policy. Astro genera, en build, los hashes SHA-256 de cada
+  // script y `<style>` inline (incluido el script anti-FOUC, que debe ser inline
+  // y bloqueante) y los inyecta en `script-src`/`style-src`, evitando recurrir a
+  // `'unsafe-inline'`. Aquí completamos el resto de directivas para un origen
+  // propio y cerrado. `frame-ancestors` no es aplicable vía <meta> (lo cubre la
+  // cabecera HTTP `X-Frame-Options: DENY`, ver `public/_headers` / `vercel.json`).
+  experimental: {
+    csp: {
+      directives: [
+        "default-src 'self'",
+        "img-src 'self' data:",
+        "font-src 'self'",
+        "connect-src 'self'",
+        "base-uri 'self'",
+        "form-action 'self'",
+        "object-src 'none'",
+      ],
+    },
+  },
 });

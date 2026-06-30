@@ -1,9 +1,9 @@
 import type { Lang } from '../i18n';
 
 /**
- * Registro de tecnologías: única fuente de verdad para el filtro y las
- * etiquetas de las tarjetas. El `value` es el slug estable usado para filtrar;
- * el `label` es el nombre visible.
+ * Registro de tecnologías: única fuente de verdad para las etiquetas de los
+ * casos de estudio. El `value` es el slug estable; el `label` es el nombre
+ * visible.
  */
 export const technologies = [
   { value: 'javascript', label: 'JavaScript' },
@@ -30,33 +30,61 @@ export function techLabel(value: TechValue): string {
   return techLabels.get(value) ?? value;
 }
 
+/** Texto bilingüe. */
+type Bilingual = Record<Lang, string>;
+
 export interface Project {
-  /** Título del proyecto por idioma. */
-  title: Record<Lang, string>;
-  /** Descripción breve por idioma. */
-  description: Record<Lang, string>;
-  /** Tecnologías (slugs de `technologies`); definen el filtrado. */
+  /** Título del proyecto (no se traduce salvo necesidad). */
+  title: Bilingual;
+  /** Descripción breve por idioma — resumen de una línea. */
+  description: Bilingual;
+  /** Caso de estudio: el problema que se resolvía. */
+  problem?: Bilingual;
+  /** Caso de estudio: la decisión técnica / solución. */
+  solution?: Bilingual;
+  /** Caso de estudio: el resultado o estado actual. */
+  result?: Bilingual;
+  /** Tecnologías (slugs de `technologies`). */
   tech: TechValue[];
-  /** Año de referencia: ordena la lista y se muestra en la tarjeta. */
+  /** Año de referencia: ordena la lista y se muestra en el caso de estudio. */
   year: number;
-  /** Repositorio (opcional). Un `#` o vacío se omite en la tarjeta. */
+  /** Repositorio (opcional). Un `#` o vacío se omite. */
   repo?: string;
-  /** Demo en vivo (opcional). Un `#` o vacío se omite en la tarjeta. */
+  /** Demo en vivo (opcional). Un `#` o vacío se omite. */
   demo?: string;
+  /** Marca el proyecto como aún en desarrollo. */
+  inProgress?: boolean;
+  /**
+   * Captura grande (opcional). Ruta dentro de `/public` (p. ej.
+   * `/work/kuxcal.png`). Si se omite, el caso de estudio muestra un panel
+   * tipográfico elegante en su lugar, listo para sustituir por la imagen real.
+   */
+  image?: string;
 }
 
 /**
- * Proyectos de ejemplo. Sustituye este arreglo por tus proyectos reales: cada
- * `tech` debe usar un slug de `technologies` para que el filtro funcione. Los
- * enlaces son placeholders (perfil de GitHub / sitio); reemplázalos por la URL
- * real de cada proyecto. Si dejas un `#`, ese enlace no se renderiza.
+ * Casos de estudio. Sustituye o amplía estos proyectos por los tuyos: cada
+ * `tech` usa un slug de `technologies`. Coloca capturas reales en `/public` y
+ * apúntalas con `image` para que se muestren en lugar del panel tipográfico.
  */
 export const projects: Project[] = [
   {
     title: { es: 'KuxCal', en: 'KuxCal' },
     description: {
       es: 'Calculadoras financieras gratuitas, precisas y fáciles de usar para inversiones, CETES, créditos y ahorro en México.',
-      en: 'Free, accurate, and easy-to-use tools for calculating investments, CETES, loans, and savings in Mexico.',
+      en: 'Free, accurate and easy-to-use financial calculators for investments, CETES, loans and savings in Mexico.',
+    },
+    problem: {
+      es: 'Las calculadoras financieras en México suelen ser imprecisas, lentas y están saturadas de anuncios.',
+      en: 'Financial calculators in Mexico are often inaccurate, slow and buried under ads.',
+    },
+    solution: {
+      es: 'Una suite de calculadoras —inversiones, CETES, créditos y ahorro— construida con Astro para servir HTML estático, sin fricción ni distracciones.',
+      en: 'A suite of calculators —investments, CETES, loans and savings— built with Astro to ship static HTML, with no friction and no distractions.',
+    },
+    result: {
+      es: 'Una herramienta gratuita, rápida y precisa, enfocada en una sola cosa: ayudar a decidir con claridad.',
+      en: 'A free, fast and precise tool focused on one thing: helping people decide with clarity.',
     },
     tech: ['astro', 'typescript'],
     year: 2026,
@@ -64,10 +92,22 @@ export const projects: Project[] = [
     demo: 'https://kuxcal.vercel.app/',
   },
   {
-    title: { es: 'Salondieliss-Linktree', en: 'Salondieliss-Linktree' },
+    title: { es: 'SalonDiEliss', en: 'SalonDiEliss' },
     description: {
-      es: 'Sitio web estilo Linktree para SalonDiEliss, diseñado como una landing page ligera y responsiva, enfocada en convertir a los visitantes en citas por WhatsApp.',
-      en: 'Linktree-style website for SalonDiEliss, designed as a lightweight, responsive landing page focused on turning visitors into WhatsApp appointments.',
+      es: 'Sitio estilo Linktree para un salón de belleza: una landing ligera y responsiva enfocada en convertir visitas en citas por WhatsApp.',
+      en: 'Linktree-style site for a beauty salon: a lightweight, responsive landing focused on turning visits into WhatsApp appointments.',
+    },
+    problem: {
+      es: 'Un salón de belleza necesitaba convertir visitas en citas sin la fricción de un sitio pesado.',
+      en: 'A beauty salon needed to turn visits into appointments without the friction of a heavy website.',
+    },
+    solution: {
+      es: 'Una landing tipo Linktree, ligera y totalmente responsiva, que canaliza cada visita directo a WhatsApp.',
+      en: 'A lightweight, fully responsive Linktree-style landing that funnels every visit straight to WhatsApp.',
+    },
+    result: {
+      es: 'Sitio en producción, optimizado para móvil y conversión, con tiempos de carga mínimos.',
+      en: 'A live site, optimized for mobile and conversion, with minimal load times.',
     },
     tech: ['astro', 'typescript'],
     year: 2026,
@@ -76,10 +116,11 @@ export const projects: Project[] = [
   {
     title: { es: 'Vault', en: 'Vault' },
     description: {
-      es: 'En construcción.',
-      en: 'In progress.',
+      es: 'Un proyecto personal en desarrollo. Pronto, más detalles.',
+      en: 'A personal project in the works. More details soon.',
     },
     tech: ['astro', 'javascript'],
-    year: 2026
+    year: 2026,
+    inProgress: true,
   },
 ];
